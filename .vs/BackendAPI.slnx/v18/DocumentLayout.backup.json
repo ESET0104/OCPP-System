@@ -1,0 +1,364 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\services\\sessionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\services\\sessionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\rabbitmq\\consumer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\rabbitmq\\consumer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\rabbitmq\\contracts\\sessionstopevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\rabbitmq\\contracts\\sessionstopevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\controllers\\sessioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\controllers\\sessioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\data\\entities\\chargingsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\data\\entities\\chargingsession.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\rabbitmq\\contracts\\metervalueevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\rabbitmq\\contracts\\metervalueevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\rabbitmq\\contracts\\sessionstartevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\rabbitmq\\contracts\\sessionstartevent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\dto\\stopchargingcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\dto\\stopchargingcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\dto\\startchargingcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\dto\\startchargingcommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\rabbitmq\\publisher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\rabbitmq\\publisher.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\services\\commandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\services\\commandservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\controllers\\chargercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\controllers\\chargercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\services\\chargerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\services\\chargerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\data\\entities\\charger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\data\\entities\\charger.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\data\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\data\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\data\\entities\\fault.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\data\\entities\\fault.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\data\\entities\\logentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\data\\entities\\logentry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|c:\\users\\medaboinamanokaushik\\source\\repos\\backendapi\\backendapi\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{494E2E43-757D-2D5F-1B51-BF2742664A95}|BackendAPI\\BackendAPI.csproj|solutionrelative:backendapi\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SessionStopEvent.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Contracts\\SessionStopEvent.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\RabbitMq\\Contracts\\SessionStopEvent.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Contracts\\SessionStopEvent.cs",
+              "RelativeToolTip": "BackendAPI\\RabbitMq\\Contracts\\SessionStopEvent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T06:13:21.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SessionService.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Services\\SessionService.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Services\\SessionService.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Services\\SessionService.cs*",
+              "RelativeToolTip": "BackendAPI\\Services\\SessionService.cs*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAABlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:16:32.958Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ChargingSession.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\ChargingSession.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Data\\Entities\\ChargingSession.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\ChargingSession.cs",
+              "RelativeToolTip": "BackendAPI\\Data\\Entities\\ChargingSession.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAsAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:23:11.866Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SessionController.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Controllers\\SessionController.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Controllers\\SessionController.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Controllers\\SessionController.cs",
+              "RelativeToolTip": "BackendAPI\\Controllers\\SessionController.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAkwCYAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:41:05.932Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Consumer.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Consumer.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\RabbitMq\\Consumer.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Consumer.cs",
+              "RelativeToolTip": "BackendAPI\\RabbitMq\\Consumer.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAhwBsAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:17:54.597Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Program.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Program.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Program.cs",
+              "RelativeToolTip": "BackendAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:10:13.878Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MeterValueEvent.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Contracts\\MeterValueEvent.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\RabbitMq\\Contracts\\MeterValueEvent.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Contracts\\MeterValueEvent.cs",
+              "RelativeToolTip": "BackendAPI\\RabbitMq\\Contracts\\MeterValueEvent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T06:13:36.106Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SessionStartEvent.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Contracts\\SessionStartEvent.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\RabbitMq\\Contracts\\SessionStartEvent.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Contracts\\SessionStartEvent.cs",
+              "RelativeToolTip": "BackendAPI\\RabbitMq\\Contracts\\SessionStartEvent.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T06:13:06.296Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "StopChargingCommand.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\DTO\\StopChargingCommand.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\DTO\\StopChargingCommand.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\DTO\\StopChargingCommand.cs",
+              "RelativeToolTip": "BackendAPI\\DTO\\StopChargingCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-19T10:26:53.748Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "StartChargingCommand.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\DTO\\StartChargingCommand.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\DTO\\StartChargingCommand.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\DTO\\StartChargingCommand.cs",
+              "RelativeToolTip": "BackendAPI\\DTO\\StartChargingCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:44:50.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Publisher.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Publisher.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\RabbitMq\\Publisher.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\RabbitMq\\Publisher.cs",
+              "RelativeToolTip": "BackendAPI\\RabbitMq\\Publisher.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBMAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:17:41.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "BackendAPI\\appsettings.json",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\appsettings.json",
+              "RelativeToolTip": "BackendAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-19T04:59:18.352Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "CommandService.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Services\\CommandService.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Services\\CommandService.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Services\\CommandService.cs",
+              "RelativeToolTip": "BackendAPI\\Services\\CommandService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAhwBgAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:16:46.276Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "LogEntry.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\LogEntry.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Data\\Entities\\LogEntry.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\LogEntry.cs",
+              "RelativeToolTip": "BackendAPI\\Data\\Entities\\LogEntry.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:23:51.34Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Charger.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\Charger.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Data\\Entities\\Charger.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\Charger.cs",
+              "RelativeToolTip": "BackendAPI\\Data\\Entities\\Charger.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:22:57.731Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ChargerController.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Controllers\\ChargerController.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Controllers\\ChargerController.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Controllers\\ChargerController.cs",
+              "RelativeToolTip": "BackendAPI\\Controllers\\ChargerController.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAYwCQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:41:22.616Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ChargerService.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Services\\ChargerService.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Services\\ChargerService.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Services\\ChargerService.cs",
+              "RelativeToolTip": "BackendAPI\\Services\\ChargerService.cs",
+              "ViewState": "AgIAABUAAAAAAAAAAAAYwB4AAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:16:16.578Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Data\\Entities\\User.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\User.cs",
+              "RelativeToolTip": "BackendAPI\\Data\\Entities\\User.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:23:21.192Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Fault.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\Fault.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Data\\Entities\\Fault.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\Entities\\Fault.cs",
+              "RelativeToolTip": "BackendAPI\\Data\\Entities\\Fault.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:23:39.05Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "BackendAPI\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\MedaboinaManoKaushik\\source\\repos\\BackendAPI\\BackendAPI\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "BackendAPI\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T10:15:55.396Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
