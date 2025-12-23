@@ -1,0 +1,50 @@
+##############################
+# ASP.NET Core / .NET
+##############################
+
+# Build results
+bin/
+obj/
+
+# Rider / VS / VS Code
+.vs/
+.idea/
+.vscode/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+**/logs/
+*.log
+
+# Test results
+TestResults/
+
+# NuGet
+*.nupkg
+packages/
+
+# Environment files
+.env
+.env.*
+appsettings.Development.json
+appsettings.Local.json
+
+# OS
+Thumbs.db
+.DS_Store
+
+##############################
+# Docker (if added later)
+##############################
+docker-compose.override.yml
+
+##############################
+# Others
+##############################
+*.db
+*.sqlite
