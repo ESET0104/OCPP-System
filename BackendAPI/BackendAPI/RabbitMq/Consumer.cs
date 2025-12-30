@@ -59,6 +59,7 @@ namespace BackendApi.RabbitMq
             await _channel.QueueBindAsync(QueueName, ExchangeName, "event.session.stopped");
             await _channel.QueueBindAsync(QueueName, ExchangeName, "event.meter.value");
             await _channel.QueueBindAsync(QueueName, ExchangeName, "event.charger.faulted");
+            await _channel.QueueBindAsync(QueueName, ExchangeName, "event.charger.recovered");
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
 
@@ -86,6 +87,14 @@ namespace BackendApi.RabbitMq
                         case "event.meter.value":
                             var meter = JsonSerializer.Deserialize<MeterValueEvent>(json);
                             await sessionService.HandleMeterValue(meter);
+                            break;
+                        case "event.charger.faulted":
+                            var fault = JsonSerializer.Deserialize<ChargerFaultEvent>(json);
+                            await sessionService.HandleChargerFault(fault);
+                            break;
+                        case "event.charger.recovered":
+                            var result = JsonSerializer.Deserialize<ChargerRecoverEvent>(json);
+                            await sessionService.HandleChargerRecovered(result);
                             break;
                     }
 

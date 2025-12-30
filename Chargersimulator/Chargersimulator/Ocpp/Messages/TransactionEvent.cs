@@ -7,6 +7,7 @@ public static class TransactionEvent
         string sessionId,
         string chargerId,
         string userId,
+        string triggerReason,
       
         int seqNo = 1)
     {
@@ -19,7 +20,7 @@ public static class TransactionEvent
             {
                 eventType, // Started | Ended
                 timestamp = DateTime.UtcNow,
-                triggerReason = "Authorized",
+                triggerReason,
                 seqNo,
 
                 evse = new

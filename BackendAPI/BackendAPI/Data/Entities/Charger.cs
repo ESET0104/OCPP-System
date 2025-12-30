@@ -15,6 +15,7 @@ namespace BackendAPI.Data.Entities
         public const string Available = "Available";
         public const string Preparing = "Preparing";
         public const string Engaged = "Engaged";
+        public const string Faulted = "Faulted";
     }
 
 }

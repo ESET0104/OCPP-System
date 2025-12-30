@@ -2,7 +2,7 @@
 
 public static class StatusNotification
 {
-    public static object Create(string status)
+    public static object Create(string status, string? errorCode = null)
     {
         return new object[]
         {
@@ -14,8 +14,9 @@ public static class StatusNotification
                 timestamp = DateTime.UtcNow,
                 evseId = 1,
                 connectorId = 1,
-                connectorStatus = status
+                connectorStatus = status,
                 // Available | Charging | Faulted 
+                errorCode
             }
         };
     }

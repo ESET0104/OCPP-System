@@ -1,4 +1,6 @@
-﻿using OcppMicroservice.Ocpp;
+﻿using OcppMicroservice.Messaging;
+using OcppMicroservice.Ocpp;
+using OcppMicroservice.State;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -20,20 +22,47 @@ namespace OcppMicroservice.WebSockets
         public async Task ListenAsync()
         {
             ChargerConnectionManager.Add(_chargePointId, _socket);
+            bool gracefulClose = false;
 
             try
             {
                 var buffer = new byte[8192];
 
+                //while (_socket.State == WebSocketState.Open)
+                //{
+                //    var result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
+
+                //    if (result.MessageType == WebSocketMessageType.Close)
+                //        break;
+
+                //    var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+                //    await OcppRouter.RouteAsync(
+                //        json,
+                //        _chargePointId,
+                //        _tenantId,
+                //        _socket);
+                //}
                 while (_socket.State == WebSocketState.Open)
                 {
-                    var result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
-
-                    if (result.MessageType == WebSocketMessageType.Close)
+                    WebSocketReceiveResult result;
+                    try
+                    {
+                        result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
+                    }
+                    catch (WebSocketException ex)
+                    {
+                        Console.WriteLine(
+                            $"WebSocket abruptly closed for charger {_chargePointId}: {ex.Message}"
+                        );
                         break;
-
+                    }
+                    if (result.MessageType == WebSocketMessageType.Close)
+                    {
+                        gracefulClose = true;
+                        break;
+                    }
                     var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
                     await OcppRouter.RouteAsync(
                         json,
                         _chargePointId,
@@ -41,14 +70,60 @@ namespace OcppMicroservice.WebSockets
                         _socket);
                 }
             }
+            //finally
+            //{
+            //    ChargerConnectionManager.Remove(_chargePointId);
+            //    await _socket.CloseAsync(
+            //        WebSocketCloseStatus.NormalClosure,
+            //        "Connection closed",
+            //        CancellationToken.None);
+            //}
             finally
             {
                 ChargerConnectionManager.Remove(_chargePointId);
-                await _socket.CloseAsync(
-                    WebSocketCloseStatus.NormalClosure,
-                    "Connection closed",
-                    CancellationToken.None);
+                if (!gracefulClose)
+                {
+                    Console.WriteLine($"Charger {_chargePointId} disconnected unexpectedly");
+
+                    var state = ChargerStateStore.Get(_chargePointId);
+                    await RabbitMqEventPublisher.PublishAsync(
+                        "event.charger.faulted",
+                        new
+                        {
+                            ChargerId = _chargePointId,
+                            FaultCode = "PowerLoss",
+                            Timestamp = DateTime.UtcNow
+                        }
+                    );
+                    if (state.ActiveSessionId != null)
+                    {
+                        //await RabbitMqEventPublisher.PublishAsync(
+                        //    "event.session.aborted",
+                        //    new
+                        //    {
+                        //        SessionId = state.ActiveSessionId,
+                        //        ChargerId = _chargePointId,
+                        //        Reason = "PowerLoss",
+                        //        Timestamp = DateTime.UtcNow
+                        //    }
+                        //);
+                        state.ActiveSessionId = null;
+                    }
+                }
+
+                try
+                {
+                    if (_socket.State != WebSocketState.Closed)
+                    {
+                        await _socket.CloseAsync(
+                            WebSocketCloseStatus.NormalClosure,
+                            "Connection closed",
+                            CancellationToken.None);
+                    }
+                }
+                catch { }
             }
+
         }
     }
 

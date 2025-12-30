@@ -27,6 +27,7 @@ public class WebSocketClient
 
         _ = HeartbeatLoop();
         _ = ReceiveLoop();
+      
     }
 
     private async Task HeartbeatLoop()
@@ -41,16 +42,41 @@ public class WebSocketClient
     private async Task ReceiveLoop()
     {
         var buffer = new byte[8192];
-
-        while (_socket.State == WebSocketState.Open)
+        try
         {
-            var result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
-            var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+            while (_socket.State == WebSocketState.Open)
+            {
+                var result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
+                var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-            Console.WriteLine("--" + json);
-            HandleIncoming(json);
+                Console.WriteLine("--" + json);
+                HandleIncoming(json);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"WebSocket error: {ex.Message}");
+        }
+        finally
+        {
+            Console.WriteLine("WebSocket disconnected unexpectedly");
+
+            if (_state.Status == ChargerStatus.Charging &&
+                _state.ActiveSessionId != null)
+            {
+                await SendAsync(
+                    OcppMessageBuilder.TransactionEnded(
+                        _state.ActiveSessionId!,
+                        _state.ChargerId,
+                        _state.ActiveUserId!,
+                        "PowerLoss"
+                    )
+                );
+            }
+            _state.Status = ChargerStatus.Faulted;
         }
     }
+
 
     private void HandleIncoming(string json)
     {
@@ -66,17 +92,17 @@ public class WebSocketClient
         switch (action)
         {
             case "RequestStartTransaction":
-                HandleRemoteStart(payload);
+                _ = HandleRemoteStart(payload);
                 break;
 
             case "RequestStopTransaction":
-                HandleRemoteStop(payload);
+                _ = HandleRemoteStop(payload);
                 break;
         }
     }
 
 
-    private async void HandleRemoteStart(JsonElement payload)
+    private async Task HandleRemoteStart(JsonElement payload)
     {
         Console.WriteLine("Remote Start Request received");
 
@@ -111,7 +137,7 @@ public class WebSocketClient
 
 
 
-    private async void HandleRemoteStop(JsonElement payload)
+    private async Task HandleRemoteStop(JsonElement payload)
     {
         Console.WriteLine("Remote Stop Request received");
 
@@ -132,7 +158,8 @@ public class WebSocketClient
          OcppMessageBuilder.TransactionEnded(
              _state.ActiveSessionId!,
              _state.ChargerId,
-             _state.ActiveUserId!
+             _state.ActiveUserId!,
+             "Authorized"
             
          )
      );
@@ -142,7 +169,7 @@ public class WebSocketClient
         _state.ActiveSessionId = null;
         _state.ActiveUserId = null;
         _state.Status = ChargerStatus.Available;
-        _state.TotalEnergyKwh = 0;
+        //_state.TotalEnergyKwh = 0;
 
         Console.WriteLine("Charging stopped");
     }
@@ -160,7 +187,7 @@ public class WebSocketClient
             await Task.Delay(TimeSpan.FromSeconds(10), token);
 
             
-            _state.TotalEnergyKwh += 0.05m;
+            _state.TotalEnergyKwh += 0.5m;
 
             await SendAsync(
                 OcppMessageBuilder.MeterValues(_state.TotalEnergyKwh)
@@ -185,4 +212,46 @@ public class WebSocketClient
 
         Console.WriteLine("-- " + json);
     }
+
+    public async Task SimulateFault(string faultCode)
+    {
+        if (_state.Status == ChargerStatus.Faulted)
+            return;
+
+        Console.WriteLine($"Simulating fault: {faultCode}");
+
+        _state.MeteringCts?.Cancel();
+
+        if (_state.ActiveSessionId != null)
+        {
+            await SendAsync(
+                OcppMessageBuilder.TransactionEnded(
+                    _state.ActiveSessionId!,
+                    _state.ChargerId,
+                    _state.ActiveUserId!,
+                    "Fault"
+                )
+            );
+        }
+
+        await SendAsync(
+            OcppMessageBuilder.StatusFaulted(faultCode)
+        );
+
+        _state.Status = ChargerStatus.Faulted;
+    }
+
+
+    public async Task SimulatePowerLoss()
+    {
+        Console.WriteLine("Simulating POWER LOSS");
+
+        _state.MeteringCts?.Cancel();
+
+        Environment.FailFast("Power loss simulated");
+    }
+
+
+
+
 }

@@ -19,6 +19,7 @@ namespace OcppMicroservice.Ocpp
             {
                 case "BootNotification":
                     await BootNotificationHandler.Handle(
+                        chargePointId,
                         message.MessageId,
                         socket);
                     break;
@@ -27,6 +28,12 @@ namespace OcppMicroservice.Ocpp
                     await AuthorizeHandler.Handle(
                         message.MessageId,
                         socket);
+                    break;
+
+                case "Heartbeat":
+                    await HeartbeatHandler.Handle(
+                        message.Payload,
+                        chargePointId);
                     break;
 
                 case "TransactionEvent":

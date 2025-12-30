@@ -29,18 +29,21 @@ public static class OcppMessageBuilder
             sessionId: sessionId,
             chargerId: chargerId,
             userId: userId,
+            triggerReason: "Authorized",
             seqNo: 1
         );
 
     public static object TransactionEnded(
         string sessionId,
         string chargerId,
-        string userId )
+        string userId,
+        string triggerReason)
         => TransactionEvent.Create(
             eventType: "Ended",
             sessionId: sessionId,
             chargerId: chargerId,
             userId: userId,
+            triggerReason: triggerReason,
             seqNo: 2
         );
 
@@ -53,5 +56,9 @@ public static class OcppMessageBuilder
 
     public static object MeterValues(decimal energyKwh)
     => Chargersimulator.Ocpp.Messages.MeterValues.Create(energyKwh);
+
+    public static object StatusFaulted(string faultCode)
+    => StatusNotification.Create("Faulted", faultCode);
+
 
 }

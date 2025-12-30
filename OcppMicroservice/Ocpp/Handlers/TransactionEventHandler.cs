@@ -12,6 +12,7 @@ namespace OcppMicroservice.Ocpp.Handlers
         {
             var eventType = payload.GetProperty("eventType").GetString();
             var timestamp = payload.GetProperty("timestamp").GetDateTime();
+            var triggerReason = payload.GetProperty("triggerReason").GetString();
 
             var transactionInfo = payload.GetProperty("transactionInfo");
             var sessionId = transactionInfo
@@ -43,7 +44,8 @@ namespace OcppMicroservice.Ocpp.Handlers
                     {
                         SessionId = sessionId,
                         ChargerId = chargePointId,
-                        StopTime = timestamp
+                        StopTime = timestamp,
+                        triggerReason
                     });
 
                 state.ActiveSessionId = null;

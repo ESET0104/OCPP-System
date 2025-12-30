@@ -59,6 +59,15 @@ namespace BackendAPI.Services
             _db.ChargingSessions.Add(session);
             charger.Status = ChargerStatus.Preparing;
 
+            await SaveLogAsync(
+                source: "backend-api",
+                eventType: "SESSION_REQUESTED",
+                message: "Start charging session requested",
+                chargerId: chargerId,
+                sessionId: session.Id,
+                userId: userId
+            );
+
             await _db.SaveChangesAsync();
 
             await _commandService.SendStartChargingCommand(
@@ -100,6 +109,15 @@ namespace BackendAPI.Services
                 charger.Status = ChargerStatus.Engaged;
             }
 
+            await SaveLogAsync(
+                source: "charger",
+                eventType: "SESSION_STARTED",
+                message: "Charging session started",
+                chargerId: evt.ChargerId,
+                sessionId: evt.SessionId,
+                userId: session.UserId
+            );
+
             await _db.SaveChangesAsync();
         }
 
@@ -123,7 +141,18 @@ namespace BackendAPI.Services
             session.LastMeterUpdate = evt.Timestamp;
 
             session.EnergyConsumedKwh = evt.EnergyKwh;
+
+            await SaveLogAsync(
+                source: "charger",
+                eventType: "METER_VALUE",
+                message: $"Energy consumed updated: {evt.EnergyKwh} kWh",
+                chargerId: evt.ChargerId,
+                sessionId: evt.SessionId,
+                userId: session.UserId
+            );
+
             await _db.SaveChangesAsync();
+
             _logger.LogInformation(
                 "MeterValue received: Session={SessionId}, Energy={Energy} kWh",
                 evt.SessionId,
@@ -144,6 +173,15 @@ namespace BackendAPI.Services
 
             session.Status = SessionStatus.Stopping;
 
+            await SaveLogAsync(
+                source: "backend-api",
+                eventType: "SESSION_STOP_REQUESTED",
+                message: "Stop charging session requested",
+                chargerId: session.ChargerId,
+                sessionId: session.Id,
+                userId: session.UserId
+            );
+
             await _db.SaveChangesAsync();
 
             await _commandService.SendStopChargingCommand(
@@ -160,6 +198,19 @@ namespace BackendAPI.Services
             if (session == null)
                 return;
 
+            if (evt.triggerReason == "Fault")
+            {
+                _logger.LogWarning(
+                    "Stop event due to fault for Session={SessionId}, ignoring completion",
+                    evt.SessionId
+                );
+                return;
+            }
+
+            if (session.Status == SessionStatus.Faulted)
+                return;
+            
+
             if (session.Status == SessionStatus.Completed)
                 return;
 
@@ -168,7 +219,6 @@ namespace BackendAPI.Services
 
             session.Status = SessionStatus.Completed;
             session.EndTime = evt.StopTime;
-            session.EnergyConsumedKwh = evt.EnergyConsumedKwh;
 
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
@@ -176,7 +226,17 @@ namespace BackendAPI.Services
             if (charger != null)
                 charger.Status = ChargerStatus.Available;
 
+            await SaveLogAsync(
+                source: "charger",
+                eventType: "SESSION_ENDED",
+                message: "Charging session completed",
+                chargerId: evt.ChargerId,
+                sessionId: evt.SessionId,
+                userId: session.UserId
+            );
+
             await _db.SaveChangesAsync();
+
             _logger.LogInformation(
                 "Session stopped: Session={SessionId}, FinalEnergy={Energy}",
                 evt.SessionId,
@@ -184,7 +244,99 @@ namespace BackendAPI.Services
             );
         }
 
+        public async Task HandleChargerFault(ChargerFaultEvent evt)
+        {
+            var fault = new Fault
+            {
+                Id = Nanoid.Generate(size: 10),
+                ChargerId = evt.ChargerId,
+                FaultCode = evt.FaultCode,
+                Timestamp = evt.Timestamp
+            };
 
+            _db.Faults.Add(fault);
+            var charger = await _db.Chargers
+                .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
+            if (charger != null)
+            {
+                charger.Status = ChargerStatus.Faulted;
+                charger.LastSeen = DateTime.UtcNow;
+            }
+
+            var activeSession = await _db.ChargingSessions
+                .FirstOrDefaultAsync(s =>
+                    s.ChargerId == evt.ChargerId &&
+                    (s.Status == SessionStatus.Active ||
+                     s.Status == SessionStatus.Pending ||
+                     s.Status == SessionStatus.Stopping));
+
+            if (activeSession != null)
+            {
+                activeSession.Status = SessionStatus.Faulted;
+                activeSession.EndTime = evt.Timestamp;
+            }
+
+            await SaveLogAsync(
+                source: "ocpp",
+                eventType: "CHARGER_FAULTED",
+                message: evt.FaultCode,
+                chargerId: evt.ChargerId,
+                sessionId: activeSession?.Id,
+                userId: activeSession?.UserId
+            );
+
+            await _db.SaveChangesAsync();
+
+            _logger.LogWarning(
+                "Charger faulted: Charger={ChargerId}, Code={FaultCode}",
+                evt.ChargerId,
+                evt.FaultCode
+            );
+        }
+
+        public async Task HandleChargerRecovered(ChargerRecoverEvent evt)
+        {
+            var charger = await _db.Chargers
+                .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
+            if (charger != null)
+            {
+                charger.Status = ChargerStatus.Available;
+                charger.LastSeen = evt.Timestamp;
+            }
+
+            await SaveLogAsync(
+                source: "ocpp",
+                eventType: "CHARGER_RECOVERED",
+                message: "charger is recovered",
+                chargerId: evt.ChargerId
+                
+            );
+
+            await _db.SaveChangesAsync();
+        }
+
+        private async Task SaveLogAsync(
+            string source,
+            string eventType,
+            string message,
+            string? chargerId = null,
+            string? sessionId = null,
+            string? userId = null)
+        {
+            var log = new LogEntry
+            {
+                Id = Guid.NewGuid(),
+                Timestamp = DateTime.UtcNow,
+                Source = source,
+                EventType = eventType,
+                Message = message,
+                ChargerId = chargerId,
+                SessionId = sessionId,
+                UserId = userId
+            };
+
+            _db.Logs.Add(log);
+        }
 
     }
 

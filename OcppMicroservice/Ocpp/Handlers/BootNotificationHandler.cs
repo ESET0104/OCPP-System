@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using OcppMicroservice.State;
+using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 
@@ -8,9 +9,11 @@ namespace OcppMicroservice.Ocpp.Handlers
     public static class BootNotificationHandler
     {
         public static async Task Handle(
+            string chargePointId,
             string messageId,
             WebSocket socket)
         {
+            HeartbeatStore.Update(chargePointId);
             var response = new object[]
             {
                 3,
@@ -30,7 +33,10 @@ namespace OcppMicroservice.Ocpp.Handlers
                 bytes,
                 WebSocketMessageType.Text,
                 true,
-                CancellationToken.None);
+                CancellationToken.None
+            );
+
+            
         }
     }
 
