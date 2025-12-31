@@ -22,7 +22,7 @@ namespace BackendAPI.Services
 
         public async Task<string> StartSessionAsync(
             string chargerId,
-            string userId)
+            string driverId)
         {
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == chargerId);
@@ -31,11 +31,14 @@ namespace BackendAPI.Services
                 throw new Exception("charger not available");
             }
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            //var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.DriverId == driverId);
+            var driver = await _db.Drivers
+    .FirstOrDefaultAsync(d => d.Id == driverId);
 
-            if(user == null)
+
+            if (driver == null)
             {
-                throw new Exception("user not Authorized");
+                throw new Exception("Driver not Authorized");
             }
 
             var existingSession = await _db.ChargingSessions
@@ -46,11 +49,17 @@ namespace BackendAPI.Services
             if (existingSession != null)
                 throw new Exception("Charger already in use");
 
+            _logger.LogInformation(
+    "Starting session for Charger={ChargerId}, DriverId={DriverId}",
+    charger.Id,
+    driver.Id
+);
+
             var session = new ChargingSession
             {
                 Id = Nanoid.Generate(size:10),
                 ChargerId = charger.Id,
-                UserId = userId,
+                Driver = driver,
                 //StartTime = DateTime.UtcNow,
                 Status = SessionStatus.Pending,
 
@@ -65,7 +74,7 @@ namespace BackendAPI.Services
                 message: "Start charging session requested",
                 chargerId: chargerId,
                 sessionId: session.Id,
-                userId: userId
+                driverId: driverId
             );
 
             await _db.SaveChangesAsync();
@@ -73,7 +82,7 @@ namespace BackendAPI.Services
             await _commandService.SendStartChargingCommand(
             charger.Id,
             session.Id,
-            userId
+            driverId
         );
 
             return session.Id;
@@ -115,7 +124,7 @@ namespace BackendAPI.Services
                 message: "Charging session started",
                 chargerId: evt.ChargerId,
                 sessionId: evt.SessionId,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -148,7 +157,7 @@ namespace BackendAPI.Services
                 message: $"Energy consumed updated: {evt.EnergyKwh} kWh",
                 chargerId: evt.ChargerId,
                 sessionId: evt.SessionId,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -179,7 +188,7 @@ namespace BackendAPI.Services
                 message: "Stop charging session requested",
                 chargerId: session.ChargerId,
                 sessionId: session.Id,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -232,7 +241,7 @@ namespace BackendAPI.Services
                 message: "Charging session completed",
                 chargerId: evt.ChargerId,
                 sessionId: evt.SessionId,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -282,7 +291,7 @@ namespace BackendAPI.Services
                 message: evt.FaultCode,
                 chargerId: evt.ChargerId,
                 sessionId: activeSession?.Id,
-                userId: activeSession?.UserId
+                driverId: activeSession?.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -321,7 +330,7 @@ namespace BackendAPI.Services
             string message,
             string? chargerId = null,
             string? sessionId = null,
-            string? userId = null)
+            string? driverId = null)
         {
             var log = new LogEntry
             {
@@ -332,7 +341,7 @@ namespace BackendAPI.Services
                 Message = message,
                 ChargerId = chargerId,
                 SessionId = sessionId,
-                UserId = userId
+                DriverId = driverId
             };
 
             _db.Logs.Add(log);

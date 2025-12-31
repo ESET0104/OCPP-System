@@ -30,7 +30,7 @@ namespace BackendAPI.Controllers
             try
             {
                 var sessionId = await _sessionService
-                .StartSessionAsync(req.ChargerId, req.UserId);
+                .StartSessionAsync(req.ChargerId, req.DriverId);
                 return Ok(new { sessionId });
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ namespace BackendAPI.Controllers
     public class StartSessionReq
     {
         public string ChargerId { get; set; }
-        public string UserId { get; set; }
+        public string DriverId { get; set; }
     }
 
     public class StopSessionReq

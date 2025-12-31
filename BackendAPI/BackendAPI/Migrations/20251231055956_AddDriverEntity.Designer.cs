@@ -3,6 +3,7 @@ using System;
 using BackendAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251231055956_AddDriverEntity")]
+    partial class AddDriverEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,7 +82,7 @@ namespace BackendAPI.Migrations
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Driver", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("DriverId")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
@@ -87,10 +90,6 @@ namespace BackendAPI.Migrations
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -120,7 +119,7 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("DriverId");
 
                     b.HasIndex("VehicleId");
 
