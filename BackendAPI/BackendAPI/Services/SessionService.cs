@@ -20,6 +20,34 @@ namespace BackendAPI.Services
             _logger = logger;
         }
 
+        public async Task<IEnumerable<ChargingSession>> GetAllSessions()
+        {
+            return await _db.ChargingSessions.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ChargingSession>> GetSessionsByDriver(string DriverId)
+        {
+            return await _db.ChargingSessions.Where(s => s.DriverId == DriverId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ChargingSession>> GetSessionsByCharger(string ChargerId)
+        {
+            return await _db.ChargingSessions.Where(s => s.ChargerId == ChargerId).ToListAsync();
+        }
+
+        public async Task<object> GetSessionInfo(string SessionId)
+        {
+            var session = await _db.ChargingSessions.FirstOrDefaultAsync(s => s.Id == SessionId);
+            return new
+            {
+                SessionId = session?.Id,
+                Status = session?.Status,
+                IntialCharge = session?.InitialCharge,
+                FinalCharge = session?.SOC,
+                EnergyConsumed = session?.EnergyConsumedKwh,
+            };
+        }
+
         public async Task<string> StartSessionAsync(
             string chargerId,
             string driverId)
@@ -109,6 +137,7 @@ namespace BackendAPI.Services
             }
             session.Status = SessionStatus.Active;
             session.StartTime = evt.StartTime;
+            session.SOC = evt.SOC;
 
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
@@ -150,6 +179,7 @@ namespace BackendAPI.Services
             session.LastMeterUpdate = evt.Timestamp;
 
             session.EnergyConsumedKwh = evt.EnergyKwh;
+            session.SOC = evt.SOC;
 
             await SaveLogAsync(
                 source: "charger",

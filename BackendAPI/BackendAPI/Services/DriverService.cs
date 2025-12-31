@@ -31,7 +31,7 @@ namespace BackendAPI.Services
             var driver = new Driver
             {
                 Id = Nanoid.Generate(size: 10),       
-                DriverId = Nanoid.Generate(size: 10),
+                //DriverId = Nanoid.Generate(size: 10),
                 FullName = dto.FullName,
                 Email = dto.Email,
                 Password = dto.Password, // hash later
@@ -74,7 +74,7 @@ namespace BackendAPI.Services
         public async Task UpdateStatusAsync(string driverId, DriverStatus status)
         {
             var driver = await _db.Drivers
-                .FirstOrDefaultAsync(d => d.DriverId == driverId);
+                .FirstOrDefaultAsync(d => d.Id == driverId);
 
             if (driver == null)
                 throw new Exception("Driver not found");
@@ -89,7 +89,7 @@ namespace BackendAPI.Services
         {
             return new DriverResponseDto
             {
-                DriverId = d.DriverId,
+                DriverId = d.Id,
                 FullName = d.FullName,
                 Email = d.Email,
                 Status = d.Status,

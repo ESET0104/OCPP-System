@@ -6,5 +6,6 @@
         public string ChargerId { get; set; }
         public DateTime Timestamp { get; set; }
         public decimal EnergyKwh { get; set; }
+        public int SOC {  get; set; }
     }
 }

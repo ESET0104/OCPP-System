@@ -12,11 +12,13 @@ namespace BackendAPI.Data.Entities
         //public User User { get; set; }
         [Required]
         [ForeignKey("Driver")]
-        public string? DriverId { get; set; }
-        public Driver? Driver { get; set; }
+        public string DriverId { get; set; }
+        public Driver Driver { get; set; }
 
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public int InitialCharge { get; set; }
+        public int SOC {  get; set; }
         public decimal? EnergyConsumedKwh {  get; set; }
         [Required] public string Status { get; set; }
         public DateTime LastMeterUpdate { get; set; }
