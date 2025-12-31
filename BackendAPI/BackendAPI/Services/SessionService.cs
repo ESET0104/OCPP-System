@@ -31,9 +31,12 @@ namespace BackendAPI.Services
                 throw new Exception("charger not available");
             }
 
-            var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.DriverId == driverId && u.Status == DriverStatus.Active);
+            //var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.DriverId == driverId);
+            var driver = await _db.Drivers
+    .FirstOrDefaultAsync(d => d.Id == driverId);
 
-            if(driver == null)
+
+            if (driver == null)
             {
                 throw new Exception("Driver not Authorized");
             }
@@ -46,11 +49,17 @@ namespace BackendAPI.Services
             if (existingSession != null)
                 throw new Exception("Charger already in use");
 
+            _logger.LogInformation(
+    "Starting session for Charger={ChargerId}, DriverId={DriverId}",
+    charger.Id,
+    driver.Id
+);
+
             var session = new ChargingSession
             {
                 Id = Nanoid.Generate(size:10),
                 ChargerId = charger.Id,
-                DriverId = driverId,
+                Driver = driver,
                 //StartTime = DateTime.UtcNow,
                 Status = SessionStatus.Pending,
 

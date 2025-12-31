@@ -13,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<CommandService>();
 builder.Services.AddScoped<ChargerService>();
 builder.Services.AddScoped<SessionService>();
+builder.Services.AddScoped<DriverService>();
+
 
 builder.Services.AddSingleton<Publisher>();
 builder.Services.AddHostedService<Consumer>();
