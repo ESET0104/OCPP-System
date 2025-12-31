@@ -19,6 +19,7 @@ namespace BackendAPI.Controllers
             _sessionService = sessionService;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetSessions()
         {
