@@ -6,5 +6,6 @@
         public string ChargerId { get; set; }
         public string UserId { get; set; }
         public DateTime StartTime { get; set; }
+        public int SOC {  get; set; }
     }
 }

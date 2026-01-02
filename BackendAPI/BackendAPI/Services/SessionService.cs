@@ -20,9 +20,37 @@ namespace BackendAPI.Services
             _logger = logger;
         }
 
+        public async Task<IEnumerable<ChargingSession>> GetAllSessions()
+        {
+            return await _db.ChargingSessions.ToListAsync();
+        }
+
+        public async Task<IEnumerable<ChargingSession>> GetSessionsByDriver(string DriverId)
+        {
+            return await _db.ChargingSessions.Where(s => s.DriverId == DriverId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ChargingSession>> GetSessionsByCharger(string ChargerId)
+        {
+            return await _db.ChargingSessions.Where(s => s.ChargerId == ChargerId).ToListAsync();
+        }
+
+        public async Task<object> GetSessionInfo(string SessionId)
+        {
+            var session = await _db.ChargingSessions.FirstOrDefaultAsync(s => s.Id == SessionId);
+            return new
+            {
+                SessionId = session?.Id,
+                Status = session?.Status,
+                IntialCharge = session?.InitialCharge,
+                FinalCharge = session?.SOC,
+                EnergyConsumed = session?.EnergyConsumedKwh,
+            };
+        }
+
         public async Task<string> StartSessionAsync(
             string chargerId,
-            string userId)
+            string driverId)
         {
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == chargerId);
@@ -31,11 +59,14 @@ namespace BackendAPI.Services
                 throw new Exception("charger not available");
             }
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            //var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.DriverId == driverId);
+            var driver = await _db.Drivers
+    .FirstOrDefaultAsync(d => d.Id == driverId);
 
-            if(user == null)
+
+            if (driver == null)
             {
-                throw new Exception("user not Authorized");
+                throw new Exception("Driver not Authorized");
             }
 
             var existingSession = await _db.ChargingSessions
@@ -46,11 +77,17 @@ namespace BackendAPI.Services
             if (existingSession != null)
                 throw new Exception("Charger already in use");
 
+            _logger.LogInformation(
+    "Starting session for Charger={ChargerId}, DriverId={DriverId}",
+    charger.Id,
+    driver.Id
+);
+
             var session = new ChargingSession
             {
                 Id = Nanoid.Generate(size:10),
                 ChargerId = charger.Id,
-                UserId = userId,
+                Driver = driver,
                 //StartTime = DateTime.UtcNow,
                 Status = SessionStatus.Pending,
 
@@ -65,7 +102,7 @@ namespace BackendAPI.Services
                 message: "Start charging session requested",
                 chargerId: chargerId,
                 sessionId: session.Id,
-                userId: userId
+                driverId: driverId
             );
 
             await _db.SaveChangesAsync();
@@ -73,7 +110,7 @@ namespace BackendAPI.Services
             await _commandService.SendStartChargingCommand(
             charger.Id,
             session.Id,
-            userId
+            driverId
         );
 
             return session.Id;
@@ -100,6 +137,7 @@ namespace BackendAPI.Services
             }
             session.Status = SessionStatus.Active;
             session.StartTime = evt.StartTime;
+            session.SOC = evt.SOC;
 
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == evt.ChargerId);
@@ -115,7 +153,7 @@ namespace BackendAPI.Services
                 message: "Charging session started",
                 chargerId: evt.ChargerId,
                 sessionId: evt.SessionId,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -141,6 +179,7 @@ namespace BackendAPI.Services
             session.LastMeterUpdate = evt.Timestamp;
 
             session.EnergyConsumedKwh = evt.EnergyKwh;
+            session.SOC = evt.SOC;
 
             await SaveLogAsync(
                 source: "charger",
@@ -148,7 +187,7 @@ namespace BackendAPI.Services
                 message: $"Energy consumed updated: {evt.EnergyKwh} kWh",
                 chargerId: evt.ChargerId,
                 sessionId: evt.SessionId,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -179,7 +218,7 @@ namespace BackendAPI.Services
                 message: "Stop charging session requested",
                 chargerId: session.ChargerId,
                 sessionId: session.Id,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -232,7 +271,7 @@ namespace BackendAPI.Services
                 message: "Charging session completed",
                 chargerId: evt.ChargerId,
                 sessionId: evt.SessionId,
-                userId: session.UserId
+                driverId: session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -282,7 +321,7 @@ namespace BackendAPI.Services
                 message: evt.FaultCode,
                 chargerId: evt.ChargerId,
                 sessionId: activeSession?.Id,
-                userId: activeSession?.UserId
+                driverId: activeSession?.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -321,7 +360,7 @@ namespace BackendAPI.Services
             string message,
             string? chargerId = null,
             string? sessionId = null,
-            string? userId = null)
+            string? driverId = null)
         {
             var log = new LogEntry
             {
@@ -332,7 +371,7 @@ namespace BackendAPI.Services
                 Message = message,
                 ChargerId = chargerId,
                 SessionId = sessionId,
-                UserId = userId
+                DriverId = driverId
             };
 
             _db.Logs.Add(log);
