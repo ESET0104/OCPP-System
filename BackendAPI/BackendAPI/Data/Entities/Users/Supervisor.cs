@@ -2,7 +2,7 @@
 
 namespace BackendAPI.Data.Entities.Users
 {
-    public class Supervisor
+    public class Supervisor :IUser
     {
         [Key]
         public string Id { get; set; }
