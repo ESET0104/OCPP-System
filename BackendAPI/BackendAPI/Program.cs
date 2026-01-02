@@ -14,6 +14,7 @@ builder.Services.AddScoped<CommandService>();
 builder.Services.AddScoped<ChargerService>();
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<DriverService>();
+builder.Services.AddScoped<VehicleService>();
 
 
 builder.Services.AddSingleton<Publisher>();
