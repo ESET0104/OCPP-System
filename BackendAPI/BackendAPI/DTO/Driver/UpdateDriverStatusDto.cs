@@ -4,6 +4,6 @@ namespace BackendAPI.DTO.Driver
 {
     public class UpdateDriverStatusDto
     {
-        public DriverStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }

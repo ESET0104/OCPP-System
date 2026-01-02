@@ -1,7 +1,7 @@
-﻿using BackendAPI.Data;
+﻿
+using BackendAPI.Data;
 using BackendAPI.Data.Entities;
 using BackendAPI.DTO.Driver;
-
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
 
@@ -16,31 +16,42 @@ namespace BackendAPI.Services
             _db = db;
         }
 
-        
+
         public async Task<DriverResponseDto> CreateDriverAsync(CreateDriverDto dto)
         {
             if (await _db.Drivers.AnyAsync(d => d.Email == dto.Email))
                 throw new Exception("Driver with this email already exists");
 
-            var vehicle = await _db.Vehicles
-        .FirstOrDefaultAsync(v => v.Id == dto.VehicleId);
+            // Validate vehicle ONLY if VehicleId is provided
+            if (!string.IsNullOrEmpty(dto.VehicleId))
+            {
+                var vehicle = await _db.Vehicles
+                    .FirstOrDefaultAsync(v => v.Id == dto.VehicleId);
 
-            if (vehicle == null)
-                throw new Exception("Vehicle not found");
+                if (vehicle == null)
+                    throw new Exception("Vehicle not found");
+
+                var alreadyAssigned = await _db.Drivers
+                    .AnyAsync(d => d.VehicleId == dto.VehicleId);
+
+                if (alreadyAssigned)
+                    throw new Exception("Vehicle already assigned to another driver");
+            }
 
             var driver = new Driver
             {
                 Id = Nanoid.Generate(size: 10),       
-                //DriverId = Nanoid.Generate(size: 10),
                 FullName = dto.FullName,
                 Email = dto.Email,
-                Password = dto.Password, // hash later
+                Password = dto.Password, // TODO: hash later
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth.HasValue
-    ? DateTime.SpecifyKind(dto.DateOfBirth.Value, DateTimeKind.Utc)
-    : null,
-                Status = DriverStatus.Active,
+                    ? DateTime.SpecifyKind(dto.DateOfBirth.Value, DateTimeKind.Utc)
+                    : null,
+                Status = "Active",
                 CreatedAt = DateTime.UtcNow,
+
+                // may be null
                 VehicleId = dto.VehicleId
             };
 
@@ -50,7 +61,8 @@ namespace BackendAPI.Services
             return Map(driver);
         }
 
-       
+
+
         public async Task<List<DriverResponseDto>> GetDriversAsync()
         {
             return await _db.Drivers
@@ -59,10 +71,11 @@ namespace BackendAPI.Services
                 .ToListAsync();
         }
 
-        public async Task<DriverResponseDto> GetDriverByIdAsync(string driverId)
+       
+        public async Task<DriverResponseDto> GetDriverByIdAsync(string id)
         {
             var driver = await _db.Drivers
-                .FirstOrDefaultAsync(d => d.Id == driverId);
+                .FirstOrDefaultAsync(d => d.Id == id);
 
             if (driver == null)
                 throw new Exception("Driver not found");
@@ -70,11 +83,11 @@ namespace BackendAPI.Services
             return Map(driver);
         }
 
-    
-        public async Task UpdateStatusAsync(string driverId, DriverStatus status)
+      
+        public async Task UpdateStatusAsync(string id, string status)
         {
             var driver = await _db.Drivers
-                .FirstOrDefaultAsync(d => d.Id == driverId);
+                .FirstOrDefaultAsync(d => d.Id == id);
 
             if (driver == null)
                 throw new Exception("Driver not found");
@@ -85,11 +98,40 @@ namespace BackendAPI.Services
             await _db.SaveChangesAsync();
         }
 
+
+        public async Task AssignVehicleAsync(string driverId, string vehicleId)
+        {
+            var driver = await _db.Drivers
+                .FirstOrDefaultAsync(d => d.Id == driverId);
+
+            if (driver == null)
+                throw new Exception("Driver not found");
+
+            var vehicle = await _db.Vehicles
+                .FirstOrDefaultAsync(v => v.Id == vehicleId);
+
+            if (vehicle == null)
+                throw new Exception("Vehicle not found");
+
+            var alreadyAssigned = await _db.Drivers
+                .AnyAsync(d => d.VehicleId == vehicleId && d.Id != driverId);
+
+            if (alreadyAssigned)
+                throw new Exception("Vehicle already assigned to another driver");
+
+            driver.VehicleId = vehicleId;
+            driver.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+        }
+
+
+
         private static DriverResponseDto Map(Driver d)
         {
             return new DriverResponseDto
             {
-                DriverId = d.Id,
+                Id = d.Id,
                 FullName = d.FullName,
                 Email = d.Email,
                 Status = d.Status,
