@@ -26,6 +26,11 @@ namespace BackendAPI.Services
             return await _db.Chargers.FirstOrDefaultAsync(_ => _.Id == id);
         }
 
+        public async Task<IEnumerable<Charger>> GetAvailableChargers()
+        {
+            return await _db.Chargers.Where(c => c.Status == "Available").ToListAsync();
+        }
+
         public async Task<Charger> RegisterAsync()
         {
             var charger = new Charger

@@ -2,12 +2,19 @@ using BackendApi.RabbitMq;
 using BackendAPI.Data;
 using BackendAPI.Services;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+Env.Load();
+builder.Configuration
+    .AddEnvironmentVariables();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+    options.UseNpgsql(
+        builder.Configuration["DB_CONNECTION"]
+    )
+);
 
 builder.Services.AddControllers();
 builder.Services.AddScoped<CommandService>();

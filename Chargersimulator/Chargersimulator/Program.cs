@@ -6,7 +6,7 @@ class Program
     {
         var chargerState = new ChargerState
         {
-            ChargerId = "q1eEGhWtH9",
+            ChargerId = "aqaLWvGAtD",
             TenantId = "tenant1",
             Status = ChargerStatus.Available
         };

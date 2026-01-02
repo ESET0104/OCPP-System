@@ -48,6 +48,12 @@ namespace BackendAPI.Services
             };
         }
 
+        public async Task<IEnumerable<ChargingSession>> GetLiveSessions()
+        {
+            var sessions = await _db.ChargingSessions.Where(s => s.Status == "Active").ToListAsync();
+            return sessions;
+        }
+
         public async Task<string> StartSessionAsync(
             string chargerId,
             string driverId)
