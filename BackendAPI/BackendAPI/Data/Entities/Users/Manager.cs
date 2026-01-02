@@ -2,7 +2,7 @@
 
 namespace BackendAPI.Data.Entities.Users
 {
-    public class Manager
+    public class Manager : IUser
     {
         [Key]
         public string Id { get; set; }
