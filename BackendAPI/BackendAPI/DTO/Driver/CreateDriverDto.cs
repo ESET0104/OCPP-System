@@ -10,6 +10,6 @@
 
          
 
-        public string VehicleId { get; set; }
+        public string? VehicleId { get; set; }
     }
 }

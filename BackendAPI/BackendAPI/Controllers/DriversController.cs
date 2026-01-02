@@ -50,5 +50,15 @@ namespace BackendAPI.Controllers
             await _driverService.UpdateStatusAsync(id, dto.Status);
             return NoContent();
         }
+
+
+        [HttpPatch("{driverId}/assign-vehicle")]
+        public async Task<IActionResult> AssignVehicle(
+    string driverId,
+    [FromBody] AssignVehicleDto dto)
+        {
+            await _driverService.AssignVehicleAsync(driverId, dto.VehicleId);
+            return NoContent();
+        }
     }
 }

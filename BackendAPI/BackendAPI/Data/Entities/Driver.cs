@@ -17,7 +17,11 @@ namespace BackendAPI.Data.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LastActiveAt { get; set; }
-        [ForeignKey("Vehicle")] public string VehicleId { get; set; }
+        //[ForeignKey("Vehicle")] public string? VehicleId { get; set; }
+        //public Vehicle? Vehicle { get; set; }
+        public string? VehicleId { get; set; }
+
+        [ForeignKey(nameof(VehicleId))]
         public Vehicle? Vehicle { get; set; }
     }
 
