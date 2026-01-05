@@ -10,8 +10,8 @@ namespace BackendAPI.Data.Entities
         [Required] public DateTime LastSeen { get; set; }
 
         [Required]
-        [ForeignKey("Location")]
-        public int LocationId { get; set; }
+        [ForeignKey(nameof(Location))]
+        public string LocationId { get; set; }
         public Location Location { get; set; }
 
     }
