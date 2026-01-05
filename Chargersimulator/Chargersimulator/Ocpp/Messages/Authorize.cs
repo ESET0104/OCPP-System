@@ -2,7 +2,7 @@
 
 public static class Authorize
 {
-    public static object Create(string idToken)
+    public static object Create(string vin)
     {
         return new object[]
         {
@@ -13,8 +13,8 @@ public static class Authorize
             {
                 idToken = new
                 {
-                    idToken = idToken,
-                    type = "Central"
+                    value = vin,
+                    type = "VIN"
                 }
             }
         };

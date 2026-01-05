@@ -26,10 +26,16 @@ namespace BackendAPI.Services
         {
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == chargerId);
-            if(charger == null || charger.Status != ChargerStatus.Available)
-            {
-                throw new Exception("charger not available");
-            }
+            //if(charger == null || charger.Status != ChargerStatus.Available)
+            //{
+            //    throw new Exception("charger not available");
+            //}
+            if (charger == null)
+                throw new Exception("charger not found");
+
+            // Must already be VIN-authorized
+            if (charger.Status != ChargerStatus.Preparing)
+                throw new Exception("vehicle not authorized or charger not ready");
 
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
 

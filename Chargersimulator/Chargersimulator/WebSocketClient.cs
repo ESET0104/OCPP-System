@@ -4,11 +4,17 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 
+
+
 public class WebSocketClient
 {
+    private TaskCompletionSource<bool>? _pendingVinAuthorization;
     private readonly ClientWebSocket _socket = new();
     private readonly ChargerState _state;
     private readonly Uri _uri;
+
+    public ChargerState State => _state;
+
 
     public WebSocketClient(ChargerState state, string url)
     {
@@ -83,6 +89,44 @@ public class WebSocketClient
         var doc = JsonDocument.Parse(json);
         var messageType = doc.RootElement[0].GetInt32();
 
+        //
+        if (messageType == 3)
+        {
+            var messageId = doc.RootElement[1].GetString();
+            var payloadmsg = doc.RootElement[2];
+
+            // Only VIN auth uses CallResult right now
+            if (_pendingVinAuthorization != null)
+            {
+                var status = payloadmsg
+                    .GetProperty("idTokenInfo")
+                    .GetProperty("status")
+                    .GetString();
+
+                var accepted = status == "Accepted";
+
+                _pendingVinAuthorization.TrySetResult(accepted);
+                _pendingVinAuthorization = null;
+
+                if (accepted)
+                {
+                    Console.WriteLine(" VIN accepted — waiting for RemoteStart");
+                    _state.Status = ChargerStatus.Preparing;
+                    //
+                    _= SendAsync(OcppMessageBuilder.StatusPreparing());
+                    //
+                }
+                else
+                {
+                    Console.WriteLine(" VIN rejected");
+                    _state.Status = ChargerStatus.Available;
+                }
+            }
+
+            return;
+        }
+        //
+
         if (messageType != 2)
             return;
 
@@ -98,6 +142,9 @@ public class WebSocketClient
             case "RequestStopTransaction":
                 _ = HandleRemoteStop(payload);
                 break;
+            //case "Authorize":
+            //    HandleAuthorizeResponse(payload);
+            //    break;
         }
     }
 
@@ -106,9 +153,15 @@ public class WebSocketClient
     {
         Console.WriteLine("Remote Start Request received");
 
-        if (_state.Status != ChargerStatus.Available)
+        //if (_state.Status != ChargerStatus.Available)
+        //{
+        //    Console.WriteLine("Charger not available");
+        //    return;
+        //}
+        if (
+    _state.Status != ChargerStatus.Preparing || _state.ActiveVin == null)
         {
-            Console.WriteLine("Charger not available");
+            Console.WriteLine("Cannot start — no authorized vehicle connected");
             return;
         }
 
@@ -117,7 +170,7 @@ public class WebSocketClient
         _state.Status = ChargerStatus.Charging;
         _state.TotalEnergyKwh = 0;
 
-        await SendAsync(OcppMessageBuilder.Authorize(_state.ActiveUserId!));
+        //await SendAsync(OcppMessageBuilder.Authorize(_state.ActiveUserId!));
        
         await SendAsync(
      OcppMessageBuilder.TransactionStarted(
@@ -174,8 +227,7 @@ public class WebSocketClient
         Console.WriteLine("Charging stopped");
     }
 
-
-
+    
     private async Task StartMeteringLoop()
     {
         _state.MeteringCts = new CancellationTokenSource();
@@ -190,7 +242,7 @@ public class WebSocketClient
             _state.TotalEnergyKwh += 0.5m;
 
             await SendAsync(
-                OcppMessageBuilder.MeterValues(_state.TotalEnergyKwh)
+                OcppMessageBuilder.MeterValues(_state.TotalEnergyKwh,_state.ActiveSoc)
             );
 
             Console.WriteLine($"Energy = {_state.TotalEnergyKwh:F2} kWh");
@@ -212,6 +264,25 @@ public class WebSocketClient
 
         Console.WriteLine("-- " + json);
     }
+
+
+    //
+    public async Task<bool> AuthorizeVinAsync(string vin)
+    {
+        if (_pendingVinAuthorization != null)
+            throw new InvalidOperationException("VIN authorization already in progress");
+
+        _pendingVinAuthorization = new TaskCompletionSource<bool>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+
+        _state.ActiveVin = vin;
+
+        await SendAsync(OcppMessageBuilder.Authorize(vin));
+
+        return await _pendingVinAuthorization.Task;
+    }
+
+
 
     public async Task SimulateFault(string faultCode)
     {
@@ -249,6 +320,28 @@ public class WebSocketClient
         _state.MeteringCts?.Cancel();
 
         Environment.FailFast("Power loss simulated");
+    }
+
+
+    public bool CanAcceptSoc =>
+    _state.Status == ChargerStatus.Charging;
+
+    public void SetCar(string vin, double soc)
+    {
+        _state.ActiveVin = vin;
+        _state.ActiveSoc = soc;
+
+        Console.WriteLine($"CAR CONNECTED: {vin}, SOC={soc}%");
+    }
+
+    public void SetSoc(double soc)
+    {
+        Console.WriteLine($"CAR SOC UPDATE: {soc}%");
+    }
+
+    public void RemoveCar()
+    {
+        Console.WriteLine("CAR DISCONNECTED");
     }
 
 

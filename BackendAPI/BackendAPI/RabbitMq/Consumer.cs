@@ -1,9 +1,12 @@
-﻿using BackendAPI.RabbitMq.Contracts;
+﻿using BackendAPI.Data;
+using BackendAPI.RabbitMq.Contracts;
 using BackendAPI.Services;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using BackendAPI.Data.Entities;
 
 namespace BackendApi.RabbitMq
 {
@@ -60,6 +63,9 @@ namespace BackendApi.RabbitMq
             await _channel.QueueBindAsync(QueueName, ExchangeName, "event.meter.value");
             await _channel.QueueBindAsync(QueueName, ExchangeName, "event.charger.faulted");
             await _channel.QueueBindAsync(QueueName, ExchangeName, "event.charger.recovered");
+            await _channel.QueueBindAsync(QueueName, ExchangeName, "vin.authorization.request");
+
+
 
             var consumer = new AsyncEventingBasicConsumer(_channel);
 
@@ -96,6 +102,77 @@ namespace BackendApi.RabbitMq
                             var result = JsonSerializer.Deserialize<ChargerRecoverEvent>(json);
                             await sessionService.HandleChargerRecovered(result);
                             break;
+                        case "vin.authorization.request":
+                            {
+                                var req = JsonSerializer.Deserialize<VinAuthorizationRequest>(json);
+
+                                using var vinscope = _scopeFactory.CreateScope();
+                                var db = vinscope.ServiceProvider.GetRequiredService<AppDbContext>();
+                                var publisher = vinscope.ServiceProvider.GetRequiredService<Publisher>();
+
+                                var driver = await db.Drivers
+                                    .Include(d => d.Vehicle)
+                                    .FirstOrDefaultAsync(d => d.Vehicle.VIN == req.Vin);
+
+                                bool accepted =
+                                    driver != null &&
+                                    driver.Status == DriverStatus.Active;
+
+                                await publisher.PublishAsync(
+                                    "vin.authorization.result",
+                                    new
+                                    {
+                                        MessageId = req.MessageId,
+                                        Accepted = accepted
+                                    }
+                                );
+
+                                _logger.LogInformation(
+                                    "VIN {Vin} auth = {Result}",
+                                    req.Vin,
+                                    accepted ? "ACCEPTED" : "REJECTED"
+                                );
+
+                                //var charger = await db.Chargers.FirstOrDefaultAsync(c => c.Id == req.ChargerId);
+
+                                //if (charger == null)
+                                //{
+                                //    _logger.LogError("Charger {Id} not found", req.ChargerId);
+                                //    break;
+                                //}
+
+                                //charger.Status = ChargerStatus.Preparing;
+                                //charger.LastSeen = DateTime.UtcNow;
+                                //await db.SaveChangesAsync();
+                                if (accepted)
+                                {
+                                    var charger = await db.Chargers
+                                        .FirstOrDefaultAsync(c => c.Id == req.ChargerId);
+
+                                    if (charger == null)
+                                    {
+                                        _logger.LogError("Charger {Id} not found for VIN auth", req.ChargerId);
+                                        break;
+                                    }
+
+                                    // Guard against bad state transitions
+                                    if (charger.Status == ChargerStatus.Available)
+                                    {
+                                        charger.Status = ChargerStatus.Preparing;
+                                        charger.LastSeen = DateTime.UtcNow;
+
+                                        await db.SaveChangesAsync();
+
+                                        _logger.LogInformation(
+                                            "Charger {Id} moved to PREPARING after VIN auth",
+                                            charger.Id
+                                        );
+                                    }
+                                }
+
+
+                                break;
+                            }
                     }
 
                     await _channel.BasicAckAsync(args.DeliveryTag, false);
