@@ -1,5 +1,6 @@
 using BackendAPI.Data;
 using BackendAPI.Repositories;
+using BackendAPI.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddScoped(typeof(IUserRepository<>), typeof(UserRepository<>));
+builder.Services.AddScoped<AdminService>();
+builder.Services.AddScoped<ManagerService>();
+builder.Services.AddScoped<SupervisorService>();
 
 // JWT Auth
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
