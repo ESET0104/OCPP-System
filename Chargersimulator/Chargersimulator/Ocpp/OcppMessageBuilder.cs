@@ -54,11 +54,32 @@ public static class OcppMessageBuilder
     public static object StatusCharging()
         => StatusNotification.Create("Charging");
 
-    public static object MeterValues(decimal energyKwh)
-    => Chargersimulator.Ocpp.Messages.MeterValues.Create(energyKwh);
+    public static object MeterValues(decimal energyKwh, double soc)
+    => Chargersimulator.Ocpp.Messages.MeterValues.Create(energyKwh,soc);
 
     public static object StatusFaulted(string faultCode)
     => StatusNotification.Create("Faulted", faultCode);
 
+
+    //
+    public static object StatusPreparing()
+    {
+        return new object[]
+        {
+        2,
+        Guid.NewGuid().ToString(),
+        "StatusNotification",
+        new
+        {
+            timestamp = DateTime.UtcNow,
+            evseId = 1,
+            connectorId = 1,
+            connectorStatus = "Preparing",
+            errorCode = (string?)null
+        }
+        };
+    }
+
+    //
 
 }

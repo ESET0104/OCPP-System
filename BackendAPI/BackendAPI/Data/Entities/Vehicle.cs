@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,9 +10,6 @@ namespace BackendAPI.Data.Entities
     [Index(nameof(VIN), IsUnique = true)]
     public class Vehicle
     {
-
-     
-
         [Key] public string Id { get; set; }
         [Required] public string VehicleName { get; set; }
         [Required] public string VIN { get; set; }

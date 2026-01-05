@@ -5,6 +5,7 @@ using OcppMicroservice.State;
 using OcppMicroservice.WebSockets;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using OcppMicroservice.Ocpp;
 
 namespace OcppMicroservice.Messaging
 {
@@ -36,6 +37,12 @@ namespace OcppMicroservice.Messaging
             );
 
             _channel.QueueBindAsync(
+            queue: queueName,
+            exchange: exchangeName,
+            routingKey: "vin.authorization.result"
+            );
+
+            _channel.QueueBindAsync(
                 queue: queueName,
                 exchange: exchangeName,
                 routingKey: "command.start"
@@ -63,6 +70,16 @@ namespace OcppMicroservice.Messaging
             var root = JsonDocument.Parse(json).RootElement;
 
             var routingKey = ea.RoutingKey;
+
+            if (routingKey == "vin.authorization.result")
+            {
+                var messageId = root.GetProperty("MessageId").GetString();
+                var accepted = root.GetProperty("Accepted").GetBoolean();
+
+                await VinAuthorizationStore.Resolve(messageId!, accepted);
+                Console.WriteLine($"VIN AUTH RESULT: {messageId} is {(accepted ? "ACCEPTED" : "REJECTED")}");
+                return;
+            }
 
             var chargerId = root.GetProperty("ChargerId").GetString();
             var sessionId = root.GetProperty("SessionId").GetString();

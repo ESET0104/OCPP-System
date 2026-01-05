@@ -2,7 +2,7 @@
 
 public static class MeterValues
 {
-    public static object Create(decimal energyKwh)
+    public static object Create(decimal energyKwh, double soc)
     {
         return new object[]
         {
@@ -27,6 +27,11 @@ public static class MeterValues
                                 {
                                     unit = "kWh"
                                 }
+                            },
+                            new {
+                                value = soc.ToString("F1"),
+                                measurand = "SoC",
+                                unitOfMeasure = new { unit = "Percent" }
                             }
                         }
                     }

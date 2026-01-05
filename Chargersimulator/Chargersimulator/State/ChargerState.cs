@@ -10,7 +10,13 @@ public class ChargerState
     public string? ActiveSessionId { get; set; }
     public string? ActiveUserId { get; set; }
 
-    
+    public string ActiveVin { get; set; }
+
+    public double ActiveSoc { get; set; }
+
+
+
+
     public decimal TotalEnergyKwh { get; set; } = 0;
     public CancellationTokenSource? MeteringCts { get; set; }
 }
@@ -19,6 +25,8 @@ public class ChargerState
 public enum ChargerStatus
 {
     Available,
+    Preparing,
+    Connected,
     Charging,
     Faulted
 }

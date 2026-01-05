@@ -12,14 +12,11 @@ namespace BackendAPI.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<Fault> Faults { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
-        public DbSet<Driver> Drivers {  get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
-
-
-     
-
-
-
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+        public DbSet<Manager> Managers { get; set; }
+        public DbSet<Supervisor> Supervisors { get; set; }
 
     }
 
