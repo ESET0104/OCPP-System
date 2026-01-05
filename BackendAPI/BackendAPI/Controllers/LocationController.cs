@@ -15,7 +15,7 @@ public class LocationController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Location location)
+    public async Task<IActionResult> Create([FromBody] Location location)
     {
         _context.Locations.Add(location);
         await _context.SaveChangesAsync();
