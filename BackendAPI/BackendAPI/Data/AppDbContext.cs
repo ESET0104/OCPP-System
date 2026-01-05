@@ -14,6 +14,7 @@ namespace BackendAPI.Data
         public DbSet<LogEntry> Logs { get; set; }
         public DbSet<SupportTicket> SupportTickets { get; set; }
         public DbSet<TicketScreenshot> TicketScreenshots { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
     }
 

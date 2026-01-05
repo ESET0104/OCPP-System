@@ -22,10 +22,10 @@ namespace BackendAPI.Data.Entities
         public string? Description { get; set; }
 
         public string? ChargerId { get; set; }
-        //public Charger? Charger { get; set; }
+       
 
         public string? VehicleId { get; set; }
-        //public Vehicle? Vehicle { get; set; }
+       
 
         [Required]
         public string CreatedByUserId { get; set; }
