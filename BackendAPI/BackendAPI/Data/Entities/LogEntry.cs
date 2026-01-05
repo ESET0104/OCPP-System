@@ -9,7 +9,7 @@
         public string Message { get; set; } = null!;
         public string? ChargerId { get; set; }
         public string? SessionId { get; set; }
-        public string? UserId { get; set; }
+        public string? DriverId { get; set; }
 
     }
 }

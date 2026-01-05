@@ -1,9 +1,9 @@
 ﻿namespace BackendAPI.Data.Entities
 {
-    public enum DriverStatus
+    public static class DriverStatus
     {
-        Active,
-        Suspended,
-        Disabled
+        public const string Active = "Active";
+        public const string Suspended = "Suspended";
+        public const string Disabled = "Disabled";
     }
 }

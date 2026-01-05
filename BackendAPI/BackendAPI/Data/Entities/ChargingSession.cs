@@ -8,10 +8,17 @@ namespace BackendAPI.Data.Entities
         [Key] public string Id { get; set; }
         [Required][ForeignKey("Charger")] public string ChargerId { get; set; }
         public Charger Charger { get; set; }
-        [Required][ForeignKey("User")] public string UserId { get; set; }
-        public User User { get; set; }
+        //[Required][ForeignKey("User")] public string UserId { get; set; }
+        //public User User { get; set; }
+        [Required]
+        [ForeignKey("Driver")]
+        public string DriverId { get; set; }
+        public Driver Driver { get; set; }
+
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
+        public int InitialCharge { get; set; }
+        public int SOC {  get; set; }
         public decimal? EnergyConsumedKwh {  get; set; }
         [Required] public string Status { get; set; }
         public DateTime LastMeterUpdate { get; set; }

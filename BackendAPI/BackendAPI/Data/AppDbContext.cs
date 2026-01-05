@@ -9,7 +9,7 @@ namespace BackendAPI.Data
 
         public DbSet<Charger> Chargers { get; set; }
         public DbSet<ChargingSession> ChargingSessions { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<Location> Locations { get; set; }
         public DbSet<Fault> Faults { get; set; }
         public DbSet<LogEntry> Logs { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
