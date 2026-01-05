@@ -11,6 +11,7 @@ namespace OcppMicroservice.Ocpp
             string json,
             string chargePointId,
             string tenantId,
+            //JsonElement payload,
             WebSocket socket)
         {
             var message = OcppMessage.Parse(json);
@@ -27,6 +28,9 @@ namespace OcppMicroservice.Ocpp
                 case "Authorize":
                     await AuthorizeHandler.Handle(
                         message.MessageId,
+                        //payload,
+                        message.Payload,
+                        chargePointId,
                         socket);
                     break;
 

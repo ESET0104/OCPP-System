@@ -3,6 +3,7 @@ using OcppMicroservice.Ocpp;
 using OcppMicroservice.State;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 
 namespace OcppMicroservice.WebSockets
 {
@@ -28,21 +29,7 @@ namespace OcppMicroservice.WebSockets
             {
                 var buffer = new byte[8192];
 
-                //while (_socket.State == WebSocketState.Open)
-                //{
-                //    var result = await _socket.ReceiveAsync(buffer, CancellationToken.None);
-
-                //    if (result.MessageType == WebSocketMessageType.Close)
-                //        break;
-
-                //    var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
-                //    await OcppRouter.RouteAsync(
-                //        json,
-                //        _chargePointId,
-                //        _tenantId,
-                //        _socket);
-                //}
+                
                 while (_socket.State == WebSocketState.Open)
                 {
                     WebSocketReceiveResult result;
@@ -63,21 +50,18 @@ namespace OcppMicroservice.WebSockets
                         break;
                     }
                     var json = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    var doc = JsonDocument.Parse(json);
+                    //var payload = doc.RootElement[3];
+                    var payload = doc.RootElement.GetArrayLength() > 3? doc.RootElement[3]: default;
                     await OcppRouter.RouteAsync(
                         json,
                         _chargePointId,
                         _tenantId,
+                        //payload,
                         _socket);
                 }
             }
-            //finally
-            //{
-            //    ChargerConnectionManager.Remove(_chargePointId);
-            //    await _socket.CloseAsync(
-            //        WebSocketCloseStatus.NormalClosure,
-            //        "Connection closed",
-            //        CancellationToken.None);
-            //}
+           
             finally
             {
                 ChargerConnectionManager.Remove(_chargePointId);
@@ -97,16 +81,7 @@ namespace OcppMicroservice.WebSockets
                     );
                     if (state.ActiveSessionId != null)
                     {
-                        //await RabbitMqEventPublisher.PublishAsync(
-                        //    "event.session.aborted",
-                        //    new
-                        //    {
-                        //        SessionId = state.ActiveSessionId,
-                        //        ChargerId = _chargePointId,
-                        //        Reason = "PowerLoss",
-                        //        Timestamp = DateTime.UtcNow
-                        //    }
-                        //);
+                        
                         state.ActiveSessionId = null;
                     }
                 }

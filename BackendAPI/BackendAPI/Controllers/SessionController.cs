@@ -67,6 +67,20 @@ namespace BackendAPI.Controllers
             }
         }
 
+        [HttpGet("Live")]
+        public async Task<IActionResult> GetLiveSessions()
+        {
+            try
+            {
+                var sessions = await _sessionService.GetLiveSessions();
+                return Ok(sessions);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("start")]
         public async Task<IActionResult> StartSession([FromBody] StartSessionReq req)
         {

@@ -30,12 +30,26 @@ namespace BackendAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var charger = _chargerService.Getcharger(id);
+            var charger = await _chargerService.Getcharger(id);
             if (charger == null)
             {
                 return BadRequest("Charger not found");
             }
             return Ok(charger);
+        }
+
+        [HttpGet("Available")]
+        public async Task<IActionResult> GetAvailableChargers()
+        {
+            try
+            {
+                var chargers = await _chargerService.GetAvailableChargers();
+                return Ok(chargers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("Add")]
@@ -45,7 +59,7 @@ namespace BackendAPI.Controllers
             return Ok(charger);
         }
 
-        [HttpPut("Update{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCharger(string id, [FromBody] string Status)
         {
             try

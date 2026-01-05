@@ -18,6 +18,7 @@ public class LocationController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateLocationRequest request)
+
     {
         var location = new Location
         {

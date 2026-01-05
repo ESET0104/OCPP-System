@@ -1,4 +1,5 @@
-﻿using Chargersimulator.State;
+﻿using Chargersimulator;
+using Chargersimulator.State;
 
 class Program
 {
@@ -6,7 +7,7 @@ class Program
     {
         var chargerState = new ChargerState
         {
-            ChargerId = "q1eEGhWtH9",
+            ChargerId = "aqaLWvGAtD",
             TenantId = "tenant1",
             Status = ChargerStatus.Available
         };
@@ -15,6 +16,8 @@ class Program
             $"ws://localhost:5102/ws?tenantId={chargerState.TenantId}&chargePointId={chargerState.ChargerId}";
 
         var client = new WebSocketClient(chargerState, wsUrl);
+
+        CarApi.Start(client);
 
         await client.StartAsync();
 
