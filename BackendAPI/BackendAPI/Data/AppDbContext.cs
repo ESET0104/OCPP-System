@@ -17,6 +17,10 @@ namespace BackendAPI.Data
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Supervisor> Supervisors { get; set; }
+        public DbSet<SupportTicket> SupportTickets { get; set; }
+        public DbSet<TicketScreenshot> TicketScreenshots { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
+
 
     }
 

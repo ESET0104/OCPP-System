@@ -23,9 +23,11 @@ builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<DriverService>();
 builder.Services.AddScoped<VehicleService>();
 
-
+builder.Services.AddScoped<TicketService>();
 builder.Services.AddSingleton<Publisher>();
 builder.Services.AddHostedService<Consumer>();
+builder.Services.AddScoped<ReservationService>();
+
 
 
 
@@ -34,7 +36,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
