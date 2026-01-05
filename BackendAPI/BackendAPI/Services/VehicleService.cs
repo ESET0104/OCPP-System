@@ -64,6 +64,27 @@ namespace BackendAPI.Services
         }
 
 
+        public async Task<VehicleResponseDto> UpdateAsync(
+    string vehicleId,
+    UpdateVehicleDto dto)
+        {
+            var vehicle = await _db.Vehicles
+                .FirstOrDefaultAsync(v => v.Id == vehicleId);
+
+            if (vehicle == null)
+                throw new Exception("Vehicle not found");
+
+            vehicle.VehicleName = dto.VehicleName;
+            vehicle.MakeandModel = $"{dto.Make} {dto.Model} {dto.Variant}";
+            vehicle.RegistrationNumber = dto.RegistrationNumber;
+            vehicle.RangeKm = dto.RangeKm;
+
+            await _db.SaveChangesAsync();
+
+            return await MapAsync(vehicle);
+        }
+
+
         public async Task DeleteAsync(string vehicleId)
         {
             var vehicle = await _db.Vehicles

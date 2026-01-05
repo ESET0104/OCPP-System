@@ -37,7 +37,16 @@ namespace BackendAPI.Controllers
             return Ok(await _vehicleService.GetByIdAsync(vehicleId));
         }
 
-        
+        [HttpPut("{vehicleId}")]
+        public async Task<IActionResult> UpdateVehicle(
+    string vehicleId,
+    [FromBody] UpdateVehicleDto dto)
+        {
+            var result = await _vehicleService.UpdateAsync(vehicleId, dto);
+            return Ok(result);
+        }
+
+
         [HttpDelete("{vehicleId}")]
         public async Task<IActionResult> Delete(string vehicleId)
         {
