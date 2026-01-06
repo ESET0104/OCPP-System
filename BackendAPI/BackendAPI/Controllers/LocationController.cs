@@ -1,7 +1,9 @@
 ﻿using BackendAPI.Data;
 using BackendAPI.Data.Entities;
+using BackendAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NanoidDotNet;
 
 [ApiController]
 [Route("api/location")]
@@ -15,22 +17,32 @@ public class LocationController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Location location)
+    public async Task<IActionResult> Create(CreateLocationRequest request)
+
     {
+        var location = new Location
+        {
+            Id = Nanoid.Generate(size: 10),   
+            Name = request.Name,
+            Address = request.Address,
+            Latitude = request.Latitude,
+            Longitude = request.Longitude
+        };
+
         _context.Locations.Add(location);
         await _context.SaveChangesAsync();
+
         return Ok(location);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var locations = await _context.Locations.ToListAsync();
-        return Ok(locations);
+        return Ok(await _context.Locations.ToListAsync());
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(string id)
     {
         var location = await _context.Locations.FindAsync(id);
         if (location == null)
@@ -40,7 +52,7 @@ public class LocationController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Location updatedLocation)
+    public async Task<IActionResult> Update(string id, Location updatedLocation)
     {
         var location = await _context.Locations.FindAsync(id);
         if (location == null)
@@ -56,7 +68,7 @@ public class LocationController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string id)
     {
         var location = await _context.Locations.FindAsync(id);
         if (location == null)
@@ -113,9 +125,8 @@ public class LocationController : ControllerBase
         return Ok(locations);
     }
 
-
     [HttpGet("{id}/chargers")]
-    public async Task<IActionResult> GetLocationWithChargers(int id)
+    public async Task<IActionResult> GetLocationWithChargers(string id)
     {
         var location = await _context.Locations.FindAsync(id);
         if (location == null)

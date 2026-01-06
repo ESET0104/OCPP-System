@@ -11,31 +11,18 @@ namespace BackendAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("""
-
-DO $$
-
-BEGIN
-
-    IF EXISTS (
-
-        SELECT 1
-
-        FROM information_schema.columns
-
-        WHERE table_name = 'Drivers'
-
-          AND column_name = 'DriverId'
-
-    ) THEN
-
-        ALTER TABLE "Drivers" DROP COLUMN "DriverId";
-
-    END IF;
-
-END $$;
-
-""");
-
+            DO $$
+            BEGIN
+                IF EXISTS (
+                    SELECT 1
+                    FROM information_schema.columns
+                    WHERE table_name = 'Drivers'
+                      AND column_name = 'DriverId'
+                ) THEN
+                    ALTER TABLE "Drivers" DROP COLUMN "DriverId";
+                END IF;
+            END $$;
+            """);
 
             migrationBuilder.AlterColumn<string>(
                 name: "Status",

@@ -1,19 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BackendAPI.Data.Entities
+﻿namespace BackendAPI.DTOs
 {
-    public class Location
+    public class CreateLocationRequest
     {
-        [Key]
-        public string Id { get; set; }
-
-        [Required]
         public string Name { get; set; }
-
         public string Address { get; set; }
-
         public decimal Latitude { get; set; }
-
         public decimal Longitude { get; set; }
     }
 }

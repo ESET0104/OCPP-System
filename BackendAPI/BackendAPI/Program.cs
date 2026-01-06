@@ -52,15 +52,22 @@ builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<DriverService>();
 builder.Services.AddScoped<VehicleService>();
 
-
+builder.Services.AddScoped<TicketService>();
 builder.Services.AddSingleton<Publisher>();
-//builder.Services.AddHostedService<Consumer>();
+builder.Services.AddHostedService<Consumer>();
+builder.Services.AddScoped<ReservationService>();
+
 
 
 
 
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

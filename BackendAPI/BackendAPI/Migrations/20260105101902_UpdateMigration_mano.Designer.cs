@@ -3,6 +3,7 @@ using System;
 using BackendAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260105101902_UpdateMigration_mano")]
+    partial class UpdateMigration_mano
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,49 @@ namespace BackendAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("BackendAPI.Data.Entities.Admin", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastActiveAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Charger", b =>
                 {
@@ -30,9 +76,8 @@ namespace BackendAPI.Migrations
                     b.Property<DateTime>("LastSeen")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("LocationId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("LocationId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -120,9 +165,7 @@ namespace BackendAPI.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("ACTIVE");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -132,12 +175,9 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
-
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Fault", b =>
@@ -165,8 +205,11 @@ namespace BackendAPI.Migrations
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Location", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -222,47 +265,6 @@ namespace BackendAPI.Migrations
                     b.ToTable("Logs");
                 });
 
-            modelBuilder.Entity("BackendAPI.Data.Entities.Reservation", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CancelledBy")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ChargerId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ConnectorId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DriverId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Reservations");
-                });
-
             modelBuilder.Entity("BackendAPI.Data.Entities.Manager", b =>
                 {
                     b.Property<string>("Id")
@@ -294,9 +296,6 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("Tokenat")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -306,16 +305,10 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
-                        .IsUnique();
-
                     b.ToTable("Managers");
                 });
 
-            modelBuilder.Entity("BackendAPI.Data.Entities.Users.Supervisor", b =>
+            modelBuilder.Entity("BackendAPI.Data.Entities.Supervisor", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -346,9 +339,6 @@ namespace BackendAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long>("Tokenat")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -357,12 +347,6 @@ namespace BackendAPI.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Username")
-                        .IsUnique();
 
                     b.ToTable("Supervisors");
                 });
@@ -447,31 +431,15 @@ namespace BackendAPI.Migrations
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("BackendAPI.Data.Entities.Driver", b =>
-                {
-                    b.HasOne("BackendAPI.Data.Entities.Vehicle", "Vehicle")
-                        .WithOne("Driver")
-                        .HasForeignKey("BackendAPI.Data.Entities.Driver", "VehicleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Vehicle");
-                });
-
             modelBuilder.Entity("BackendAPI.Data.Entities.Fault", b =>
                 {
-                    b.HasOne("BackendAPI.Data.Entities.SupportTicket", "SupportTicket")
-                        .WithMany("Screenshots")
-                        .HasForeignKey("SupportTicketId")
+                    b.HasOne("BackendAPI.Data.Entities.Charger", "Charger")
+                        .WithMany()
+                        .HasForeignKey("ChargerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("SupportTicket");
-                });
-
-            modelBuilder.Entity("BackendAPI.Data.Entities.Vehicle", b =>
-                {
-                    b.Navigation("Driver");
+                    b.Navigation("Charger");
                 });
 #pragma warning restore 612, 618
         }
