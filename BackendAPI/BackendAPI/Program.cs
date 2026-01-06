@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using DotNetEnv;
+using BackendAPI.Services;
+using BackendApi.RabbitMq;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,36 +54,11 @@ builder.Services.AddScoped<VehicleService>();
 
 
 builder.Services.AddSingleton<Publisher>();
-builder.Services.AddHostedService<Consumer>();
+//builder.Services.AddHostedService<Consumer>();
 
 
 
-builder.Services.AddOpenApi();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Enter 'Bearer {token}'"
-    });
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiReference
-            {
-                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            },
-            new string[] {}
-        }
-    });
-});
 
 var app = builder.Build();
 

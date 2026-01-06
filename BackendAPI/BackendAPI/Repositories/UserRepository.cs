@@ -1,6 +1,7 @@
 ﻿using BackendAPI.Data;
 using BackendAPI.Data.Entities.Users;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace BackendAPI.Repositories
 {
@@ -38,6 +39,12 @@ namespace BackendAPI.Repositories
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.AnyAsync(predicate);
+        }
+
 
     }
 

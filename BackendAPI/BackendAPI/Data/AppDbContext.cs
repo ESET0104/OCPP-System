@@ -18,6 +18,10 @@ namespace BackendAPI.Data
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Supervisor> Supervisors { get; set; }
 
+        public DbSet<Driver> Drivers { get; set; } = default!;
+
+        public DbSet<Vehicle> Vehicles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -47,6 +51,15 @@ namespace BackendAPI.Data
             modelBuilder.Entity<Supervisor>()
                 .HasIndex(s => s.Username)
                 .IsUnique();
+
+            modelBuilder.Entity<Driver>()
+                .ToTable("Drivers")
+                .HasIndex(d => d.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Driver>()
+                .Property(d => d.Status)
+                .HasDefaultValue("ACTIVE");
         }
     }
     

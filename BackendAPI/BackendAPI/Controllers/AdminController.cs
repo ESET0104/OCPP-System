@@ -1,7 +1,5 @@
-﻿using BackendAPI.Data.Entities.Users;
-using BackendAPI.DTO;
-using BackendAPI.DTO.Auth;
-using BackendAPI.Repositories;
+﻿using BackendAPI.DTO.Auth;
+using BackendAPI.Exceptions;
 using BackendAPI.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,28 +18,93 @@ namespace BackendAPI.Controllers
             _service = service;
         }
 
+        
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
-            => Ok(await _service.GetAllAsync());
+        {
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+       
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
-            => (await _service.GetByIdAsync(id)) is { } u ? Ok(u) : NotFound();
+        {
+            try
+            {
+                var user = await _service.GetByIdAsync(id);
+                return Ok(user);
+            }
+            catch (BusinessException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserDto dto)
-            => Ok(await _service.CreateAsync(dto));
+        public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
+        {
+            try
+            {
+                var created = await _service.CreateAsync(dto);
+                return Ok(created);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, UpdateUserDto dto)
-            => (await _service.UpdateAsync(id, dto)) is { } u ? Ok(u) : NotFound();
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateUserDto dto)
+        {
+            try
+            {
+                var updated = await _service.UpdateAsync(id, dto);
+                return Ok(updated);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, UpdateUserDto dto)
-            => (await _service.PatchAsync(id, dto)) is { } u ? Ok(u) : NotFound();
+        public async Task<IActionResult> Patch(string id, [FromBody] UpdateUserDto dto)
+        {
+            try
+            {
+                var updated = await _service.PatchAsync(id, dto);
+                return Ok(updated);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // ---------------- DELETE ----------------
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
-            => await _service.DeleteAsync(id) ? Ok("Admin deleted") : NotFound();
+        {
+            try
+            {
+                await _service.DeleteAsync(id);
+                return Ok("Admin deleted");
+            }
+            catch (BusinessException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

@@ -1,6 +1,5 @@
-﻿using BackendAPI.DTO;
-using BackendAPI.DTO.Auth;
-using BackendAPI.Services;
+﻿using BackendAPI.DTO.Auth;
+using BackendAPI.Exceptions;
 using BackendAPI.Services.UserServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +8,7 @@ namespace BackendAPI.Controllers
 {
     [ApiController]
     [Route("api/supervisors")]
-    // [Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = "Admin,Manager")]
     public class SupervisorController : ControllerBase
     {
         private readonly SupervisorService _service;
@@ -19,30 +18,93 @@ namespace BackendAPI.Controllers
             _service = service;
         }
 
+        
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
-            => Ok(await _service.GetAllAsync());
+        {
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
-            => (await _service.GetByIdAsync(id)) is { } s ? Ok(s) : NotFound();
+        {
+            try
+            {
+                var supervisor = await _service.GetByIdAsync(id);
+                return Ok(supervisor);
+            }
+            catch (BusinessException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
+
+        
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserDto dto)
-            => Ok(await _service.CreateAsync(dto));
+        public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
+        {
+            try
+            {
+                var created = await _service.CreateAsync(dto);
+                return Ok(created);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, UpdateUserDto dto)
-            => (await _service.UpdateAsync(id, dto)) is { } s ? Ok(s) : NotFound();
+        public async Task<IActionResult> Update(string id, [FromBody] UpdateUserDto dto)
+        {
+            try
+            {
+                var updated = await _service.UpdateAsync(id, dto);
+                return Ok(updated);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(string id, UpdateUserDto dto)
-            => (await _service.PatchAsync(id, dto)) is { } s ? Ok(s) : NotFound();
+        public async Task<IActionResult> Patch(string id, [FromBody] UpdateUserDto dto)
+        {
+            try
+            {
+                var updated = await _service.PatchAsync(id, dto);
+                return Ok(updated);
+            }
+            catch (BusinessException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+       
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
-            => await _service.DeleteAsync(id)
-                ? Ok("Supervisor deleted")
-                : NotFound();
+        {
+            try
+            {
+                await _service.DeleteAsync(id);
+                return Ok("Supervisor deleted");
+            }
+            catch (BusinessException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+        }
     }
 }

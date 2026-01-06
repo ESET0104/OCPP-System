@@ -1,4 +1,5 @@
 ﻿using BackendAPI.Data.Entities.Users;
+using System.Linq.Expressions;
 
 namespace BackendAPI.Repositories
 {
@@ -10,6 +11,8 @@ namespace BackendAPI.Repositories
         Task<T> UpdateAsync(T entity);
 
         Task DeleteAsync(T entity);
+
+        Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
     }
 
 }

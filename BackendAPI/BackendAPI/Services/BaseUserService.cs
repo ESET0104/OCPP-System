@@ -1,11 +1,12 @@
 ﻿using BackendAPI.Data.Entities.Users;
 using BackendAPI.DTO.Auth;
 using BackendAPI.Repositories;
+using BackendAPI.Exceptions;
 
 namespace BackendAPI.Services
 {
     public class BaseUserService<TUser>
-    where TUser : class, IUser, new()
+        where TUser : class, IUser, new()
     {
         protected readonly IUserRepository<TUser> _repo;
 
@@ -14,17 +15,38 @@ namespace BackendAPI.Services
             _repo = repo;
         }
 
-        public async Task<IEnumerable<UserDTO>> GetAllAsync()
-            => (await _repo.GetAllAsync()).Select(Map);
+        
 
-        public async Task<UserDTO?> GetByIdAsync(string id)
+        public async Task<IEnumerable<UserDTO>> GetAllAsync()
+        {
+            return (await _repo.GetAllAsync()).Select(Map);
+        }
+
+        
+
+        public async Task<UserDTO> GetByIdAsync(string id)
         {
             var user = await _repo.GetByIdAsync(id);
-            return user == null ? null : Map(user);
+            if (user == null)
+                throw new BusinessException("User not found");
+
+            return Map(user);
         }
+
+        
 
         public async Task<UserDTO> CreateAsync(CreateUserDto dto)
         {
+            
+
+           
+            if (await _repo.ExistsAsync(u => u.Username == dto.Username))
+                throw new BusinessException("Username already exists");
+
+            
+            if (await _repo.ExistsAsync(u => u.Email == dto.Email))
+                throw new BusinessException("Email already exists");
+
             var user = new TUser
             {
                 Id = Guid.NewGuid().ToString(),
@@ -42,10 +64,23 @@ namespace BackendAPI.Services
             return Map(user);
         }
 
-        public async Task<UserDTO?> UpdateAsync(string id, UpdateUserDto dto)
+        
+
+        public async Task<UserDTO> UpdateAsync(string id, UpdateUserDto dto)
         {
             var user = await _repo.GetByIdAsync(id);
-            if (user == null) return null;
+            if (user == null)
+                throw new BusinessException("User not found");
+
+            
+            if (!string.IsNullOrEmpty(dto.Username) &&
+                await _repo.ExistsAsync(u => u.Username == dto.Username && u.Id != id))
+                throw new BusinessException("Username already exists");
+
+            
+            if (!string.IsNullOrEmpty(dto.Email) &&
+                await _repo.ExistsAsync(u => u.Email == dto.Email && u.Id != id))
+                throw new BusinessException("Email already exists");
 
             user.Username = dto.Username ?? user.Username;
             user.Email = dto.Email ?? user.Email;
@@ -58,17 +93,24 @@ namespace BackendAPI.Services
             return Map(user);
         }
 
-        public async Task<UserDTO?> PatchAsync(string id, UpdateUserDto dto)
-            => await UpdateAsync(id, dto);
+        
 
-        public async Task<bool> DeleteAsync(string id)
+        public async Task<UserDTO> PatchAsync(string id, UpdateUserDto dto)
+        {
+            return await UpdateAsync(id, dto);
+        }
+
+
+        public async Task DeleteAsync(string id)
         {
             var user = await _repo.GetByIdAsync(id);
-            if (user == null) return false;
+            if (user == null)
+                throw new BusinessException("User not found");
 
             await _repo.DeleteAsync(user);
-            return true;
         }
+
+        
 
         protected virtual UserDTO Map(TUser u) => new()
         {
