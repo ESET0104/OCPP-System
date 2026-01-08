@@ -50,12 +50,12 @@ namespace BackendAPI.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             // 6️⃣ Keep your existing column addition (UNCHANGED)
-            migrationBuilder.AddColumn<int>(
-                name: "InitialCharge",
-                table: "ChargingSessions",
-                type: "integer",
-                nullable: false,
-                defaultValue: 0);
+            //migrationBuilder.AddColumn<int>(
+            //    name: "InitialCharge",
+            //    table: "ChargingSessions",
+            //    type: "integer",
+            //    nullable: false,
+            //    defaultValue: 0);
         }
 
 
@@ -66,9 +66,9 @@ namespace BackendAPI.Migrations
                 name: "FK_Chargers_Locations_LocationId",
                 table: "Chargers");
 
-            migrationBuilder.DropColumn(
-                name: "InitialCharge",
-                table: "ChargingSessions");
+            //migrationBuilder.DropColumn(
+            //    name: "InitialCharge",
+            //    table: "ChargingSessions");
 
             migrationBuilder.AlterColumn<int>(
                 name: "Id",

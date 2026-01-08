@@ -3,6 +3,7 @@ using System;
 using BackendAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260106070025_SyncSnapshotOnly")]
+    partial class SyncSnapshotOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +45,7 @@ namespace BackendAPI.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Chargers", (string)null);
+                    b.ToTable("Chargers");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.ChargingSession", b =>
@@ -86,7 +89,7 @@ namespace BackendAPI.Migrations
 
                     b.HasIndex("DriverId");
 
-                    b.ToTable("ChargingSessions", (string)null);
+                    b.ToTable("ChargingSessions");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Driver", b =>
@@ -160,7 +163,7 @@ namespace BackendAPI.Migrations
 
                     b.HasIndex("ChargerId");
 
-                    b.ToTable("Faults", (string)null);
+                    b.ToTable("Faults");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Location", b =>
@@ -184,7 +187,7 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.LogEntry", b =>
@@ -219,7 +222,7 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Reservation", b =>
@@ -260,7 +263,7 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Reservations", (string)null);
+                    b.ToTable("Reservations");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.SupportTicket", b =>
@@ -309,7 +312,7 @@ namespace BackendAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SupportTickets", (string)null);
+                    b.ToTable("SupportTickets");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.TicketScreenshot", b =>
@@ -329,7 +332,7 @@ namespace BackendAPI.Migrations
 
                     b.HasIndex("SupportTicketId");
 
-                    b.ToTable("TicketScreenshots", (string)null);
+                    b.ToTable("TicketScreenshots");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Users.Admin", b =>
@@ -381,7 +384,7 @@ namespace BackendAPI.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Admins", (string)null);
+                    b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Users.Manager", b =>
@@ -433,7 +436,7 @@ namespace BackendAPI.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Managers", (string)null);
+                    b.ToTable("Managers");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Users.Supervisor", b =>
@@ -485,7 +488,7 @@ namespace BackendAPI.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Supervisors", (string)null);
+                    b.ToTable("Supervisors");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Vehicle", b =>
@@ -526,7 +529,7 @@ namespace BackendAPI.Migrations
                     b.HasIndex("VIN")
                         .IsUnique();
 
-                    b.ToTable("Vehicles", (string)null);
+                    b.ToTable("Vehicles");
                 });
 
             modelBuilder.Entity("BackendAPI.Data.Entities.Charger", b =>

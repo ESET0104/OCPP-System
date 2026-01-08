@@ -11,65 +11,65 @@ namespace BackendAPI.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Admins",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Company = table.Column<string>(type: "text", nullable: false),
-                    Department = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Admins", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Admins",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<string>(type: "text", nullable: false),
+            //        Username = table.Column<string>(type: "text", nullable: false),
+            //        Email = table.Column<string>(type: "text", nullable: false),
+            //        Password = table.Column<string>(type: "text", nullable: false),
+            //        Status = table.Column<string>(type: "text", nullable: false),
+            //        Company = table.Column<string>(type: "text", nullable: false),
+            //        Department = table.Column<string>(type: "text", nullable: false),
+            //        CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+            //        UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+            //        LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Admins", x => x.Id);
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "Managers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Company = table.Column<string>(type: "text", nullable: false),
-                    Department = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Managers", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Managers",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<string>(type: "text", nullable: false),
+            //        Username = table.Column<string>(type: "text", nullable: false),
+            //        Email = table.Column<string>(type: "text", nullable: false),
+            //        Password = table.Column<string>(type: "text", nullable: false),
+            //        Status = table.Column<string>(type: "text", nullable: false),
+            //        Company = table.Column<string>(type: "text", nullable: false),
+            //        Department = table.Column<string>(type: "text", nullable: false),
+            //        CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+            //        UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+            //        LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Managers", x => x.Id);
+            //    });
 
-            migrationBuilder.CreateTable(
-                name: "Supervisors",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: false),
-                    Company = table.Column<string>(type: "text", nullable: false),
-                    Department = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Supervisors", x => x.Id);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Supervisors",
+            //    columns: table => new
+            //    {
+            //        Id = table.Column<string>(type: "text", nullable: false),
+            //        Username = table.Column<string>(type: "text", nullable: false),
+            //        Email = table.Column<string>(type: "text", nullable: false),
+            //        Password = table.Column<string>(type: "text", nullable: false),
+            //        Status = table.Column<string>(type: "text", nullable: false),
+            //        Company = table.Column<string>(type: "text", nullable: false),
+            //        Department = table.Column<string>(type: "text", nullable: false),
+            //        CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+            //        UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+            //        LastActiveAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Supervisors", x => x.Id);
+            //    });
 
             //migrationBuilder.CreateTable(
             //    name: "Vehicles",
@@ -126,17 +126,17 @@ namespace BackendAPI.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Admins");
+            //migrationBuilder.DropTable(
+            //    name: "Admins");
+
+            ////migrationBuilder.DropTable(
+            ////    name: "Drivers");
 
             //migrationBuilder.DropTable(
-            //    name: "Drivers");
+            //    name: "Managers");
 
-            migrationBuilder.DropTable(
-                name: "Managers");
-
-            migrationBuilder.DropTable(
-                name: "Supervisors");
+            //migrationBuilder.DropTable(
+            //    name: "Supervisors");
 
             //migrationBuilder.DropTable(
             //    name: "Vehicles");
