@@ -75,6 +75,8 @@ builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<DriverService>();
 builder.Services.AddScoped<VehicleService>();
 builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddScoped<DashboardService>();
+
 
 
 builder.Services.AddScoped<TicketService>();

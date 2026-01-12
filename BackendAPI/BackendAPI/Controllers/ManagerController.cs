@@ -8,7 +8,7 @@ namespace BackendAPI.Controllers
 {
     [ApiController]
     [Route("api/managers")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ManagerController : ControllerBase
     {
         private readonly ManagerService _service;

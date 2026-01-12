@@ -4,9 +4,11 @@ using BackendAPI.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/location")]
+[Authorize(Roles = "ADMIN,MANAGER")] //allowing only admin and manager to create/update/delete
 public class LocationController : ControllerBase
 {
     private readonly AppDbContext _context;

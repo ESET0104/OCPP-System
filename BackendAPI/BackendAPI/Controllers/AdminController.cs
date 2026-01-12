@@ -8,7 +8,7 @@ namespace BackendAPI.Controllers
 {
     [ApiController]
     [Route("api/admins")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {
         private readonly AdminService _service;
