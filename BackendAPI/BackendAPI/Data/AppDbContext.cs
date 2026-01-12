@@ -26,6 +26,9 @@ namespace BackendAPI.Data
 
         public DbSet<Vehicle> Vehicles { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

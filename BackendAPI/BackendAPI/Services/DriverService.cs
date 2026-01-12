@@ -42,7 +42,7 @@ namespace BackendAPI.Services
                 Id = Nanoid.Generate(size: 10),
                 FullName = dto.FullName,
                 Email = dto.Email,
-                Password = PasswordHasher.Hash(dto.Password), // ✅ HASHED
+                Password = PasswordHasher.Hash(dto.Password), 
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth.HasValue
                     ? DateTime.SpecifyKind(dto.DateOfBirth.Value, DateTimeKind.Utc)

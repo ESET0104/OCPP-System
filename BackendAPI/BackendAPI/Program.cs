@@ -1,13 +1,15 @@
+using BackendApi.RabbitMq;
 using BackendAPI.Data;
+using BackendAPI.Notifications;
 using BackendAPI.Repositories;
+using BackendAPI.Services;
 using BackendAPI.Services.UserServices;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using DotNetEnv;
-using BackendAPI.Services;
-using BackendApi.RabbitMq;
+using System.Threading.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +25,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddScoped(typeof(IUserRepository<>), typeof(UserRepository<>));
+//builder.Services.AddScoped<INotificationSender, AzureNotificationSender>();
+builder.Services.AddScoped<INotificationSender, DummyNotificationSender>();
+
 builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<ManagerService>();
 builder.Services.AddScoped<SupervisorService>();
@@ -43,6 +48,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
+
+
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("AuthPolicy", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
@@ -72,6 +95,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

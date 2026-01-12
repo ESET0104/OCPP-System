@@ -3,6 +3,7 @@
 using BackendAPI.DTO.Auth.Driver;
 using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,6 +14,7 @@ namespace BackendAPI.Controllers
 {
     [ApiController]
     [Route("api/driver/auth")]
+    [EnableRateLimiting("AuthPolicy")]
     public class DriverAuthController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -38,13 +40,13 @@ namespace BackendAPI.Controllers
                 return Unauthorized("Invalid credentials");
             }
 
-            // 2️⃣ Check if stored password is valid
+            
             if (string.IsNullOrWhiteSpace(driver.Password))
             {
                 return Unauthorized("Invalid credentials");
             }
 
-            // 3️⃣ Verify password (hashed vs plain)
+            
             if (!PasswordHasher.Verify(request.Password, driver.Password))
             {
                 return Unauthorized("Invalid credentials");
