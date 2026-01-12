@@ -74,19 +74,23 @@ builder.Services.AddScoped<ChargerService>();
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<DriverService>();
 builder.Services.AddScoped<VehicleService>();
+
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<DashboardService>();
 
 
 
 builder.Services.AddScoped<TicketService>();
+builder.Services.AddScoped<ReservationService>();
+builder.Services.AddScoped<ReportsService>();
 builder.Services.AddSingleton<Publisher>();
 builder.Services.AddHostedService<Consumer>();
-builder.Services.AddScoped<ReservationService>();
 
 
 
 
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
 
 
 var app = builder.Build();
