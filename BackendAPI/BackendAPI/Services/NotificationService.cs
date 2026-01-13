@@ -4,6 +4,8 @@ using BackendAPI.DTO.Notification;
 using BackendAPI.Notifications;
 using Microsoft.EntityFrameworkCore;
 using NanoidDotNet;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace BackendAPI.Services
 {
@@ -11,12 +13,17 @@ namespace BackendAPI.Services
     {
         private readonly AppDbContext _db;
         private readonly INotificationSender _sender;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        public NotificationService(AppDbContext db, INotificationSender sender)
+        public NotificationService(
+       AppDbContext db,
+       INotificationSender sender,
+       IHttpContextAccessor httpContextAccessor)
         {
             _db = db;
             _sender = sender;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -31,7 +38,7 @@ namespace BackendAPI.Services
                 TargetUserId = dto.TargetUserId,
                 Status = dto.ScheduledAt == null ? "Pending" : "Scheduled",
                 ScheduledAt = dto.ScheduledAt,
-                CreatedBy = "admin", // later from JWT
+                CreatedBy = GetCreatedBy(),
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -95,6 +102,23 @@ namespace BackendAPI.Services
                 SentAt = n.SentAt
             };
         }
+
+        private string GetCreatedBy()
+        {
+            var user = _httpContextAccessor.HttpContext?.User;
+
+            if (user == null || !user.Identity?.IsAuthenticated == true)
+                throw new UnauthorizedAccessException("User is not authenticated");
+
+            // username
+            var username = user.FindFirst(ClaimTypes.Name)?.Value;
+
+            // Fallback to userId if needed
+            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return username ?? userId ?? "unknown";
+        }
+
     }
 
 }

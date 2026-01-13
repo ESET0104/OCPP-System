@@ -27,11 +27,24 @@ namespace BackendAPI.Services
             };
 
             _context.Reservations.Add(reservation);
+
+            _context.Logs.Add(new LogEntry
+            {
+                Id = Guid.NewGuid(),
+                Timestamp = DateTime.UtcNow,
+                Source = "reservation",
+                EventType = "RESERVATION_CREATED",
+                Message = $"Reservation created for charger {dto.ChargerId}",
+                ChargerId = dto.ChargerId,
+                DriverId = dto.DriverId
+            });
+
             await _context.SaveChangesAsync();
             return reservation;
         }
 
- 
+
+
         public async Task<Reservation?> Cancel(string id, CancelReservationDto dto)
         {
             var reservation = await _context.Reservations.FindAsync(id);
@@ -40,6 +53,17 @@ namespace BackendAPI.Services
             reservation.Status = "Cancelled";
             reservation.CancelledBy = dto.CancelledBy;
             reservation.EndTime = DateTime.UtcNow;
+
+            _context.Logs.Add(new LogEntry
+            {
+                Id = Guid.NewGuid(),
+                Timestamp = DateTime.UtcNow,
+                Source = "reservation",
+                EventType = "RESERVATION_CANCELLED",
+                Message = $"Reservation {id} cancelled by {dto.CancelledBy}",
+                ChargerId = reservation.ChargerId,
+                DriverId = reservation.DriverId
+            });
 
             await _context.SaveChangesAsync();
             return reservation;

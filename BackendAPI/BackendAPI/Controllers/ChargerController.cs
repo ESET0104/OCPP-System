@@ -1,50 +1,52 @@
-﻿using BackendAPI.Data;
-using BackendAPI.Data.Entities;
+﻿using BackendAPI.DTO.Charger;
 using BackendAPI.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BackendAPI.Controllers
 {
-    [Route("api/chargers")]
     [ApiController]
+    [Route("api/chargers")]
     public class ChargerController : ControllerBase
     {
-        private readonly AppDbContext _db;
         private readonly ChargerService _chargerService;
 
-        public ChargerController(AppDbContext db, ChargerService chargerService)
+        public ChargerController(ChargerService chargerService)
         {
-            _db = db;
             _chargerService = chargerService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var chargers = await _chargerService.GetallChargers();
-            return Ok(chargers);
+            return Ok(await _chargerService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var charger = await _chargerService.Getcharger(id);
-            if (charger == null)
+            try
             {
-                return BadRequest("Charger not found");
+                return Ok(await _chargerService.GetByIdAsync(id));
             }
-            return Ok(charger);
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
-        [HttpGet("Available")]
-        public async Task<IActionResult> GetAvailableChargers()
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailable()
+        {
+            return Ok(await _chargerService.GetAvailableAsync());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateChargerDto dto)
         {
             try
             {
-                var chargers = await _chargerService.GetAvailableChargers();
-                return Ok(chargers);
+                var charger = await _chargerService.RegisterAsync(dto.LocationId);
+                return CreatedAtAction(nameof(GetById), new { id = charger.Id }, charger);
             }
             catch (Exception ex)
             {
@@ -52,34 +54,30 @@ namespace BackendAPI.Controllers
             }
         }
 
-        [HttpPost("Add")]
-        public async Task<IActionResult> AddCharger()
-        {
-            var charger = await _chargerService.RegisterAsync();
-            return Ok(charger);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCharger(string id, [FromBody] string Status)
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(string id,[FromBody] UpdateChargerStatusDto dto)
         {
             try
             {
-                var res = await _chargerService.UpdateAsync(id, Status);
-                return Ok(res);
+                var updatedCharger =
+                    await _chargerService.UpdateStatusAsync(id, dto.Status);
+
+                return Ok(updatedCharger);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCharger(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {
                 await _chargerService.DeleteAsync(id);
-                return Ok("charger removed");
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -87,5 +85,4 @@ namespace BackendAPI.Controllers
             }
         }
     }
-
 }

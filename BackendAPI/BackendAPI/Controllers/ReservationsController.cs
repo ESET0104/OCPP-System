@@ -16,7 +16,7 @@ namespace BackendAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateReservationDto dto)
+        public async Task<IActionResult> Create([FromBody] CreateReservationDto dto)
         {
             var reservation = await _service.Create(dto);
             return Ok(reservation);
@@ -24,7 +24,7 @@ namespace BackendAPI.Controllers
 
        
         [HttpPut("{id}/cancel")]
-        public async Task<IActionResult> Cancel(string id, CancelReservationDto dto)
+        public async Task<IActionResult> Cancel(string id,[FromBody] CancelReservationDto dto)
         {
             var reservation = await _service.Cancel(id, dto);
             if (reservation == null) return NotFound();

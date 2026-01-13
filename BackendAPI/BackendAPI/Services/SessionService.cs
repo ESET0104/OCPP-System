@@ -66,8 +66,8 @@ namespace BackendAPI.Services
             if (charger == null)
                 throw new Exception("charger not found");
 
-            if (charger.Status != ChargerStatus.Preparing)
-                throw new Exception("vehicle not authorized or charger not ready");
+            //if (charger.Status != ChargerStatus.Preparing)
+            //    throw new Exception("vehicle not authorized or charger not ready");
 
             if (charger == null || charger.Status != ChargerStatus.Available)
                 throw new Exception("Charger not available");
