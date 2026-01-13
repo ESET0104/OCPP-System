@@ -41,7 +41,7 @@ namespace BackendAPI.Controllers
         {
             try
             {
-                var chargers = await _chargerService.GetAvailableChargers();
+                var chargers = await _chargerService.GetAvailableAsync();
                 return Ok(chargers);
             }
             catch (Exception ex)
@@ -50,19 +50,11 @@ namespace BackendAPI.Controllers
             }
         }
 
-        //[HttpPost("Add")]
-        //public async Task<IActionResult> AddCharger()
-        //{
-        //    var charger = await _chargerService.RegisterAsync();
-        //    return Ok(charger);
-        //}
-
         [HttpPost]
         public async Task<IActionResult> AddCharger([FromBody] CreateChargerRequest request)
         {
             var charger = await _chargerService.RegisterAsync(
-                request.LocationId,
-                request.Status
+                request.LocationId
             );
             return Ok(charger);
         }
