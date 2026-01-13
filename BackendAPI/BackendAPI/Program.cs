@@ -78,6 +78,7 @@ builder.Services.AddScoped<VehicleService>();
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<DashboardService>();
 
+builder.Services.AddScoped<LogsService>();
 
 
 builder.Services.AddScoped<TicketService>();
@@ -85,6 +86,10 @@ builder.Services.AddScoped<ReservationService>();
 builder.Services.AddScoped<ReportsService>();
 builder.Services.AddSingleton<Publisher>();
 builder.Services.AddHostedService<Consumer>();
+
+builder.Services.AddScoped<NotificationService>();
+builder.Services.AddHttpContextAccessor();
+
 
 
 

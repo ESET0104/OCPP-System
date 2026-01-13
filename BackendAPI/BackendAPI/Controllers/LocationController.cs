@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/location")]
-[Authorize(Roles = "ADMIN,MANAGER")] //allowing only admin and manager to create/update/delete
+//[Authorize(Roles = "ADMIN,MANAGER")] //allowing only admin and manager to create/update/delete
 public class LocationController : ControllerBase
 {
     private readonly AppDbContext _context;
