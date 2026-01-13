@@ -27,44 +27,58 @@ namespace BackendAPI.Services
             return await _db.ChargingSessions.ToListAsync();
         }
 
-        public async Task<IEnumerable<ChargingSession>> GetSessionsByDriver(string DriverId)
+        public async Task<IEnumerable<ChargingSession>> GetSessionsByDriver(string driverId)
         {
-            return await _db.ChargingSessions.Where(s => s.DriverId == DriverId).ToListAsync();
+            return await _db.ChargingSessions
+                .Where(s => s.DriverId == driverId)
+                .ToListAsync();
         }
 
-        public async Task<IEnumerable<ChargingSession>> GetSessionsByCharger(string ChargerId)
+        public async Task<IEnumerable<ChargingSession>> GetSessionsByCharger(string chargerId)
         {
-            return await _db.ChargingSessions.Where(s => s.ChargerId == ChargerId).ToListAsync();
+            return await _db.ChargingSessions
+                .Where(s => s.ChargerId == chargerId)
+                .ToListAsync();
         }
 
-        public async Task<object> GetSessionInfo(string SessionId)
+        public async Task<object> GetSessionInfo(string sessionId)
         {
-            var session = await _db.ChargingSessions.FirstOrDefaultAsync(s => s.Id == SessionId);
+            var session = await _db.ChargingSessions
+                .FirstOrDefaultAsync(s => s.Id == sessionId);
+
+            if (session == null)
+                throw new Exception("Session not found");
+
             return new
             {
-                SessionId = session?.Id,
-                Status = session?.Status,
-                IntialCharge = session?.InitialCharge,
-                FinalCharge = session?.SOC,
-                EnergyConsumed = session?.EnergyConsumedKwh,
+                SessionId = session.Id,
+                Status = session.Status,
+                InitialCharge = session.InitialCharge,
+                FinalCharge = session.SOC,
+                EnergyConsumed = session.EnergyConsumedKwh,
+                StartTime = session.StartTime,
+                EndTime = session.EndTime
             };
         }
 
         public async Task<IEnumerable<ChargingSession>> GetLiveSessions()
         {
-            var sessions = await _db.ChargingSessions.Where(s => s.Status == "Active").ToListAsync();
-            return sessions;
+            return await _db.ChargingSessions
+                .Where(s => s.Status == SessionStatus.Active)
+                .ToListAsync();
         }
 
-        public async Task<string> StartSessionAsync(
-            string chargerId,
-            string driverId)
+        // ------------------- START SESSION -------------------
+
+        public async Task<string> StartSessionAsync(string chargerId, string driverId)
         {
+            using var tx = await _db.Database.BeginTransactionAsync();
+
             var charger = await _db.Chargers
                 .FirstOrDefaultAsync(c => c.Id == chargerId);
 
             if (charger == null)
-                throw new Exception("charger not found");
+                throw new Exception("Charger not found");
 
             //if (charger.Status != ChargerStatus.Preparing)
             //    throw new Exception("vehicle not authorized or charger not ready");
@@ -87,7 +101,7 @@ namespace BackendAPI.Services
                 throw new Exception("Charger already in use");
 
             _logger.LogInformation(
-                "Starting session for Charger={ChargerId}, DriverId={DriverId}",
+                "Starting session for Charger={ChargerId}, Driver={DriverId}",
                 charger.Id,
                 driver.Id
             );
@@ -97,22 +111,26 @@ namespace BackendAPI.Services
                 Id = Nanoid.Generate(size: 10),
                 ChargerId = charger.Id,
                 DriverId = driver.Id,
-                Status = SessionStatus.Pending
+                Status = SessionStatus.Pending,
+                StartTime = DateTime.UtcNow
             };
 
             _db.ChargingSessions.Add(session);
+
+            // Reserve charger
             charger.Status = ChargerStatus.Preparing;
 
             await SaveLogAsync(
-                source: "backend-api",
-                eventType: "SESSION_REQUESTED",
-                message: "Start charging session requested",
-                chargerId: charger.Id,
-                sessionId: session.Id,
-                driverId: driver.Id
+                "backend-api",
+                "SESSION_REQUESTED",
+                "Start charging session requested",
+                charger.Id,
+                session.Id,
+                driver.Id
             );
 
             await _db.SaveChangesAsync();
+            await tx.CommitAsync();
 
             await _commandService.SendStartChargingCommand(
                 charger.Id,
@@ -123,6 +141,7 @@ namespace BackendAPI.Services
             return session.Id;
         }
 
+        // ------------------- SESSION EVENTS -------------------
 
         public async Task HandleSessionStarted(SessionStartEvent evt)
         {
@@ -150,17 +169,16 @@ namespace BackendAPI.Services
                 charger.Status = ChargerStatus.Engaged;
 
             await SaveLogAsync(
-                source: "charger",
-                eventType: "SESSION_STARTED",
-                message: "Charging session started",
-                chargerId: evt.ChargerId,
-                sessionId: evt.SessionId,
-                driverId: session.DriverId
+                "charger",
+                "SESSION_STARTED",
+                "Charging session started",
+                evt.ChargerId,
+                evt.SessionId,
+                session.DriverId
             );
 
             await _db.SaveChangesAsync();
         }
-
 
         public async Task HandleMeterValue(MeterValueEvent evt)
         {
@@ -172,32 +190,34 @@ namespace BackendAPI.Services
                 session.ChargerId != evt.ChargerId)
                 return;
 
-            if (session.LastMeterUpdate != null &&
+            if (session.LastMeterUpdate != default &&
                 evt.Timestamp <= session.LastMeterUpdate)
                 return;
+
 
             session.LastMeterUpdate = evt.Timestamp;
             session.EnergyConsumedKwh = evt.EnergyKwh;
             session.SOC = evt.SOC;
 
             await SaveLogAsync(
-                source: "charger",
-                eventType: "METER_VALUE",
-                message: $"Energy consumed updated: {evt.EnergyKwh} kWh",
-                chargerId: evt.ChargerId,
-                sessionId: evt.SessionId,
-                driverId: session.DriverId
+                "charger",
+                "METER_VALUE",
+                $"Energy updated: {evt.EnergyKwh} kWh",
+                evt.ChargerId,
+                evt.SessionId,
+                session.DriverId
             );
 
             await _db.SaveChangesAsync();
 
             _logger.LogInformation(
-                "MeterValue received: Session={SessionId}, Energy={Energy} kWh",
+                "MeterValue: Session={SessionId}, Energy={Energy}",
                 evt.SessionId,
                 evt.EnergyKwh
             );
         }
 
+        // ------------------- STOP SESSION -------------------
 
         public async Task StopSessionAsync(string sessionId)
         {
@@ -212,13 +232,19 @@ namespace BackendAPI.Services
 
             session.Status = SessionStatus.Stopping;
 
+            var charger = await _db.Chargers
+                .FirstOrDefaultAsync(c => c.Id == session.ChargerId);
+
+            if (charger != null)
+                charger.Status = ChargerStatus.Preparing;
+
             await SaveLogAsync(
-                source: "backend-api",
-                eventType: "SESSION_STOP_REQUESTED",
-                message: "Stop charging session requested",
-                chargerId: session.ChargerId,
-                sessionId: session.Id,
-                driverId: session.DriverId
+                "backend-api",
+                "SESSION_STOP_REQUESTED",
+                "Stop charging session requested",
+                session.ChargerId,
+                session.Id,
+                session.DriverId
             );
 
             await _db.SaveChangesAsync();
@@ -241,10 +267,9 @@ namespace BackendAPI.Services
 
             if (evt.triggerReason == "Fault")
             {
-                _logger.LogWarning(
-                    "Stop event due to fault for Session={SessionId}",
-                    evt.SessionId
-                );
+                session.Status = SessionStatus.Faulted;
+                session.EndTime = evt.StopTime;
+                await _db.SaveChangesAsync();
                 return;
             }
 
@@ -258,17 +283,18 @@ namespace BackendAPI.Services
                 charger.Status = ChargerStatus.Available;
 
             await SaveLogAsync(
-                source: "charger",
-                eventType: "SESSION_ENDED",
-                message: "Charging session completed",
-                chargerId: evt.ChargerId,
-                sessionId: evt.SessionId,
-                driverId: session.DriverId
+                "charger",
+                "SESSION_ENDED",
+                "Charging session completed",
+                evt.ChargerId,
+                evt.SessionId,
+                session.DriverId
             );
 
             await _db.SaveChangesAsync();
         }
 
+        // ------------------- FAULT HANDLING -------------------
 
         public async Task HandleChargerFault(ChargerFaultEvent evt)
         {
@@ -294,9 +320,7 @@ namespace BackendAPI.Services
             var activeSession = await _db.ChargingSessions
                 .FirstOrDefaultAsync(s =>
                     s.ChargerId == evt.ChargerId &&
-                    (s.Status == SessionStatus.Active ||
-                     s.Status == SessionStatus.Pending ||
-                     s.Status == SessionStatus.Stopping));
+                    s.Status != SessionStatus.Completed);
 
             if (activeSession != null)
             {
@@ -305,17 +329,16 @@ namespace BackendAPI.Services
             }
 
             await SaveLogAsync(
-                source: "ocpp",
-                eventType: "CHARGER_FAULTED",
-                message: evt.FaultCode,
-                chargerId: evt.ChargerId,
-                sessionId: activeSession?.Id,
-                driverId: activeSession?.DriverId
+                "ocpp",
+                "CHARGER_FAULTED",
+                evt.FaultCode,
+                evt.ChargerId,
+                activeSession?.Id,
+                activeSession?.DriverId
             );
 
             await _db.SaveChangesAsync();
         }
-
 
         public async Task HandleChargerRecovered(ChargerRecoverEvent evt)
         {
@@ -329,15 +352,16 @@ namespace BackendAPI.Services
             }
 
             await SaveLogAsync(
-                source: "ocpp",
-                eventType: "CHARGER_RECOVERED",
-                message: "Charger recovered",
-                chargerId: evt.ChargerId
+                "ocpp",
+                "CHARGER_RECOVERED",
+                "Charger recovered",
+                evt.ChargerId
             );
 
             await _db.SaveChangesAsync();
         }
 
+        // ------------------- LOGGING -------------------
 
         private async Task SaveLogAsync(
             string source,

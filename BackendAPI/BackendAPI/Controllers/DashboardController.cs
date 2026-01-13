@@ -42,5 +42,46 @@ namespace BackendAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("energy/trend")]
+        public async Task<IActionResult> GetEnergyTrend(
+            [FromQuery] DateTime from,
+            [FromQuery] DateTime to)
+        {
+            var result = await _dashboardService.GetEnergyTrend(from, to);
+            return Ok(result);
+        }
+
+        [HttpGet("cost/trend")]
+        public async Task<IActionResult> GetCostTrend(
+            [FromQuery] DateTime from,
+            [FromQuery] DateTime to)
+        {
+            var data = await _dashboardService.GetCostTrend(from, to);
+            return Ok(data);
+        }
+
+        [HttpGet("co2/trend")]
+        public async Task<IActionResult> GetCo2Trend(
+            [FromQuery] DateTime from,
+            [FromQuery] DateTime to)
+        {
+            var data = await _dashboardService.GetCo2Trend(from, to);
+            return Ok(data);
+        }
+
+        [HttpGet("charger-status")]
+        public async Task<IActionResult> GetChargerStatus()
+        {
+            var data = await _dashboardService.GetChargerStatusDistribution();
+            return Ok(data);
+        }
+
+        [HttpGet("sessions/live")]
+        public async Task<IActionResult> GetLiveSessions()
+        {
+            var count = await _dashboardService.GetLiveSessionsCount();
+            return Ok(new { liveSessions = count });
+        }
+
     }
 }

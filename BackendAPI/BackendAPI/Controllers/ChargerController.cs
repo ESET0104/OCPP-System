@@ -1,6 +1,8 @@
 ﻿using BackendAPI.DTO.Charger;
 using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using BackendAPI.DTO;
 
 namespace BackendAPI.Controllers
 {
@@ -34,24 +36,35 @@ namespace BackendAPI.Controllers
             }
         }
 
-        [HttpGet("available")]
-        public async Task<IActionResult> GetAvailable()
-        {
-            return Ok(await _chargerService.GetAvailableAsync());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateChargerDto dto)
+        [HttpGet("Available")]
+        public async Task<IActionResult> GetAvailableChargers()
         {
             try
             {
-                var charger = await _chargerService.RegisterAsync(dto.LocationId);
-                return CreatedAtAction(nameof(GetById), new { id = charger.Id }, charger);
+                var chargers = await _chargerService.GetAvailableChargers();
+                return Ok(chargers);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        //[HttpPost("Add")]
+        //public async Task<IActionResult> AddCharger()
+        //{
+        //    var charger = await _chargerService.RegisterAsync();
+        //    return Ok(charger);
+        //}
+
+        [HttpPost]
+        public async Task<IActionResult> AddCharger([FromBody] CreateChargerRequest request)
+        {
+            var charger = await _chargerService.RegisterAsync(
+                request.LocationId,
+                request.Status
+            );
+            return Ok(charger);
         }
 
         [HttpPatch("{id}/status")]

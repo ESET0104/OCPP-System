@@ -1,4 +1,5 @@
 ﻿using BackendAPI.Data;
+using BackendAPI.Data.Entities;
 using BackendAPI.DTO.Dashboard;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,44 +16,37 @@ namespace BackendAPI.Services
 
         public async Task<DashboardSummaryDto> GetSummaryAsync()
         {
-            var totalChargersTask = _context.Chargers.CountAsync();
-            var activeChargersTask = _context.Chargers
+            var totalChargers = await _context.Chargers.CountAsync();
+
+            var activeChargers = await _context.Chargers
                 .CountAsync(c => c.Status == "ACTIVE");
 
-            var inactiveChargersTask = _context.Chargers
+            var inactiveChargers = await _context.Chargers
                 .CountAsync(c => c.Status != "ACTIVE");
 
-            var liveSessionsTask = _context.ChargingSessions
+            var liveSessions = await _context.ChargingSessions
                 .CountAsync(s => s.Status == "ONGOING");
 
-            var driversTask = _context.Drivers.CountAsync();
+            var drivers = await _context.Drivers.CountAsync();
 
-            var energyTask = _context.ChargingSessions
+            var energyWh = await _context.ChargingSessions
                 .Where(s => s.EnergyConsumedKwh != null)
                 .SumAsync(s => s.EnergyConsumedKwh.Value);
 
-            await Task.WhenAll(
-                totalChargersTask,
-                activeChargersTask,
-                inactiveChargersTask,
-                liveSessionsTask,
-                driversTask,
-                energyTask
-            );
-
-            var energyMwh = energyTask.Result / 1000; // assuming Wh stored
+            var energyMwh = energyWh / 1000;
 
             return new DashboardSummaryDto
             {
-                TotalChargePoints = totalChargersTask.Result,
-                ActiveChargePoints = activeChargersTask.Result,
-                InactiveChargePoints = inactiveChargersTask.Result,
-                LiveSessions = liveSessionsTask.Result,
-                Drivers = driversTask.Result,
+                TotalChargePoints = totalChargers,
+                ActiveChargePoints = activeChargers,
+                InactiveChargePoints = inactiveChargers,
+                LiveSessions = liveSessions,
+                Drivers = drivers,
                 EnergyMwh = Math.Round(energyMwh, 2),
                 Co2SavedTonnes = CalculateCo2(energyMwh)
             };
         }
+
 
         private decimal CalculateCo2(decimal energyMwh)
         {
@@ -78,9 +72,13 @@ namespace BackendAPI.Services
 
         public async Task<List<SessionTrendDto>> GetSessionTrend(DateTime from, DateTime to)
         {
+            var fromUtc = DateTime.SpecifyKind(from, DateTimeKind.Utc);
+            var toUtc = DateTime.SpecifyKind(to, DateTimeKind.Utc);
+
             return await _context.ChargingSessions
-                .Where(s => s.StartTime.Date >= from.Date &&
-                            s.StartTime.Date <= to.Date)
+                .Where(s =>
+                    s.StartTime >= fromUtc &&
+                    s.StartTime <= toUtc)
                 .GroupBy(s => s.StartTime.Date)
                 .Select(g => new SessionTrendDto
                 {
@@ -90,5 +88,98 @@ namespace BackendAPI.Services
                 .OrderBy(x => x.Date)
                 .ToListAsync();
         }
+
+        public async Task<List<EnergyTrendDto>> GetEnergyTrend(DateTime from, DateTime to)
+        {
+            var fromUtc = DateTime.SpecifyKind(from, DateTimeKind.Utc);
+            var toUtc = DateTime.SpecifyKind(to, DateTimeKind.Utc);
+
+            return await _context.ChargingSessions
+                .Where(s =>
+                    s.StartTime >= fromUtc &&
+                    s.StartTime <= toUtc &&
+                    s.EnergyConsumedKwh != null)
+                .GroupBy(s => s.StartTime.Date)
+                .Select(g => new EnergyTrendDto
+                {
+                    Date = g.Key,
+                    EnergyMwh = Math.Round(
+                        g.Sum(x => x.EnergyConsumedKwh.Value) / 1000, 2
+                    )
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+        }
+
+        public async Task<List<CostTrendDto>> GetCostTrend(DateTime from, DateTime to)
+        {
+            const decimal tariffPerKwh = 10;
+
+            var fromUtc = DateTime.SpecifyKind(from, DateTimeKind.Utc);
+            var toUtc = DateTime.SpecifyKind(to, DateTimeKind.Utc);
+
+            return await _context.ChargingSessions
+                .Where(s =>
+                    s.StartTime >= fromUtc &&
+                    s.StartTime <= toUtc &&
+                    s.EnergyConsumedKwh != null
+                )
+                .GroupBy(s => s.StartTime.Date)
+                .Select(g => new CostTrendDto
+                {
+                    Date = g.Key,
+                    Cost = Math.Round(
+                        g.Sum(x => x.EnergyConsumedKwh.Value * tariffPerKwh), 2
+                    )
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+        }
+
+
+        public async Task<List<Co2TrendDto>> GetCo2Trend(DateTime from, DateTime to)
+        {
+            const decimal factor = 0.7m;
+
+            var fromUtc = DateTime.SpecifyKind(from, DateTimeKind.Utc);
+            var toUtc = DateTime.SpecifyKind(to, DateTimeKind.Utc);
+
+            return await _context.ChargingSessions
+                .Where(s =>
+                    s.StartTime >= fromUtc &&
+                    s.StartTime <= toUtc &&
+                    s.EnergyConsumedKwh != null)
+                .GroupBy(s => s.StartTime.Date)
+                .Select(g => new Co2TrendDto
+                {
+                    Date = g.Key,
+                    Co2Tonnes = Math.Round(
+                        (g.Sum(x => x.EnergyConsumedKwh.Value) / 1000) * factor, 2)
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+        }
+
+
+        public async Task<List<ChargerStatusDto>> GetChargerStatusDistribution()
+        {
+            return await _context.Chargers
+                .GroupBy(c => c.Status)
+                .Select(g => new ChargerStatusDto
+                {
+                    Status = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<int> GetLiveSessionsCount()
+        {
+            return await _context.ChargingSessions
+                .CountAsync(s => s.Status == SessionStatus.Active);
+        }
+
+
+
     }
 }
