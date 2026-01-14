@@ -1,5 +1,6 @@
 ﻿using BackendAPI.Data;
 using BackendAPI.Data.Entities;
+using BackendAPI.RabbitMq.Contracts;
 using BackendAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -114,6 +115,21 @@ namespace BackendAPI.Controllers
             }
             
         }
+
+        [HttpPost("meter-value")]
+        public async Task<IActionResult> MeterValue([FromBody] MeterValueEvent req)
+        {
+            try
+            {
+                await _sessionService.HandleMeterValue(req);
+                return Ok("Meter value processed");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 
     public class StartSessionReq
